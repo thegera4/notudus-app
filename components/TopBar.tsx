@@ -1,10 +1,7 @@
 import { ScreenEnum } from '@/constants/Enums'
 import { Ionicons } from '@expo/vector-icons'
 import { View, Text, StyleSheet, Pressable } from 'react-native'
-
-type TopBarProps = {
-  screen: string
-}
+import { TopBarProps } from '@/types'
 
 /**
  * This is the App Bar component, which shows different options and icons, depending on the screen (notes or todos).

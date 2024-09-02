@@ -1,0 +1,72 @@
+export const notes = [
+    {
+        id: 1,
+        title: 'Note 1',
+        content: 'Content 1: hudhuidsfhuikjdfhikljdfhikjldfhijkldfihljkfdsnikljdfsinhfsdnifdshikdsfhiksdfhikfdhikfsdhkjsdfhjksdfhjksdfhjkfsd',
+        date: '2021-09-01',
+        locked: 1,
+    },
+    {
+        id: 2,
+        title: 'Note 2',
+        content: 'Content 2',
+        date: '2021-09-02',
+        locked: 0,
+    },
+    {
+        id: 3,
+        title: 'Note 3',
+        content: 'Content 3: ljdfhikjldfhijkldfihljkfdsnikljdfsinhfsdnifdshikdsfhiksdfhikfdhikfsdhkjsdfhjksdfhjksdfhjkfsd',
+        date: '2021-09-03',
+        locked: 1,
+    },
+    {
+        id: 4,
+        title: 'Note 4',
+        content: 'Content 4ljdfhikjldfhijkldfihljkfdsnikljdfsinhfsdnifdshikdsfhiksdfhikfdhikfsdhkjsdfhjksdfhjksdfhjkfsd',
+        date: '2021-09-04',
+        locked: 1,
+    },
+    {
+        id: 5,
+        title: 'Note 5',
+        content: 'Content 5',
+        date: '2021-09-05',
+        locked: 0,
+    },
+    {
+        id: 6,
+        title: 'Note 6',
+        content: 'Content 6ljdfhikjldfhijkldfihljkfdsnikljdfsinhfsdnifdshikdsfhiksdfhikfdhikfsdhkjsdfhjksdfhjksdfhjkfsd',
+        date: '2021-09-06',
+        locked: 1,
+    },
+    {
+        id: 7,
+        title: 'Note 7',
+        content: 'Content 7ljdfhikjldfhijkldfihljkfdsnikljdfsinhfsdnifdshikdsfhiksdfhikfdhikfsdhkjsdfhjksdfhjksdfhjkfsd',
+        date: '2021-09-07',
+        locked: 1,
+    },
+    {
+        id: 8,
+        title: 'Note 8',
+        content: 'Content 8',
+        date: '2021-09-08',
+        locked: 0,
+    },
+    {
+        id: 9,
+        title: 'Note 9',
+        content: 'Content 9ljdfhikjldfhijkldfihljkfdsnikljdfsinhfsdnifdshikdsfhiksdfhikfdhikfsdhkjsdfhjksdfhjksdfhjkfsd',
+        date: '2021-09-09',
+        locked: 1,
+    },
+    {
+        id: 10,
+        title: 'Note 10',
+        content: 'Content 10',
+        date: '2021-09-10',
+        locked: 0,
+    }
+    ];

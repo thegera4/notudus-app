@@ -2,6 +2,23 @@ import { ScreenEnum } from '@/constants/Enums'
 import { Ionicons } from '@expo/vector-icons'
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 import { TopBarProps } from '@/types'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+/**
+ * This function changes the value stored in shared preferences for the view of the notes screen (list or grid).
+ */
+const handleView = async () => {
+  try {
+    const value = await AsyncStorage.getItem('view')
+    if (value === 'list') {
+      await AsyncStorage.setItem('view', 'grid')
+    } else {
+      await AsyncStorage.setItem('view', 'list')
+    }
+  } catch (e) {
+    console.error(`error while changing the note list view: ${e}`)
+  }
+}
 
 /**
  * This is the App Bar component, which shows different options and icons, depending on the screen (notes or todos).
@@ -18,7 +35,7 @@ export default function TopBar({screen}: TopBarProps) {
           <Pressable style={({pressed}) => pressed && styles.pressed} onPress={() => console.log('search')}>
             <Ionicons name="search" size={24} color="white" />
           </Pressable>
-          <Pressable style={({pressed}) => pressed && styles.pressed} onPress={() => console.log('list')}>
+          <Pressable style={({pressed}) => pressed && styles.pressed} onPress={handleView}>
             <Ionicons name="list" size={24} color="white" />
           </Pressable>
         </View>

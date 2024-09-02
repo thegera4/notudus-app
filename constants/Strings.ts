@@ -1,7 +1,6 @@
 /**
- * These are the strings that are used in the application
+ * String values used in the application
  */
-
 export const Strings = {
   // App Name
   APP_NAME: 'Notudus',

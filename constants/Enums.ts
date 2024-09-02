@@ -1,5 +1,3 @@
-// Enums used in the application
-
 /**
  * Contains the names of the screens in the application
  */

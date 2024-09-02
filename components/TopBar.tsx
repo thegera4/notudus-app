@@ -12,9 +12,7 @@ type TopBarProps = {
 export default function TopBar({screen}: TopBarProps) {
   return (
     <View style={styles.mainTopBar}>
-      <View>
-        <Text style={styles.screenTitle}>{screen}</Text>
-      </View>
+      <View><Text style={styles.screenTitle}>{screen}</Text></View>
       { screen === ScreenEnum.Notes &&
         <View style={styles.notesIcons}>
           <Pressable style={({pressed}) => pressed && styles.pressed} onPress={() => console.log('lock')}>

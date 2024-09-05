@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons"
+
 /**
- * Note model.
+ * Note model type.
  */
 export interface Note {
     id: number;
@@ -13,7 +14,8 @@ export interface Note {
  * Props received by the NoteItem component.
  */
 export type NoteItemProps = {
-    note: Note
+    note: Note,
+    view: string,
 }
 /**
  * Props received by the TopBar component.
@@ -21,7 +23,9 @@ export type NoteItemProps = {
 export type TopBarProps = {
     screen: string,
     onLockPress: () => void,
-    auth: boolean
+    auth: boolean,
+    onViewPress: () => void,
+    view: string,
 }
 /**
  * Props received by the TopBarIcon component.

@@ -4,19 +4,20 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ListNoteItem from '@/components/ListNoteItem';
 import TopBar from '@/components/TopBar';
 import FAB from '@/components/FAB';
+import GridNoteItem from '@/components/GridNoteItem';
 import { getNotes } from '@/utils/db';
 import { ScreenEnum } from '@/constants/Enums';
 import { Note } from '@/types';
 import { notes as notesFromDB } from '@/fakenotes';
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import GridNoteItem from '@/components/GridNoteItem';
+import * as LocalAuthentication from 'expo-local-authentication';
 
 /**
  * The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.
 */
 export default function NotesScreen() {
   const [notes, setNotes] = useState<Note[]>(notesFromDB)
-  const [auth, setAuth] = useState<boolean>(false) // change to context when needed
+  const [auth, setAuth] = useState<boolean>(false) // change to context if needed
   const [view, setView] = useState<string>('list')
 
   const filteredNotes = useMemo(() => getNotes(auth, notesFromDB), [auth, notesFromDB]);
@@ -37,10 +38,25 @@ export default function NotesScreen() {
 
   /**
    * This function handles the authentication of the user when the lock icon is pressed.
+   * It uses the LocalAuthentication API to authenticate the user with their fingerprint.
+   * If the user is already authenticated, it hides the private notes.
   */
-  const handleAuth = useCallback(() => setAuth(prevAuth => !prevAuth), []) // change to context when needed
+  const handleAuth = useCallback(async () => { 
+    if(auth){
+      setAuth(false)
+      return
+    }
+    try{
+      const result = await LocalAuthentication.authenticateAsync()
+      if (result.success){
+        setAuth(true)
+      }
+    } catch (e) {
+      console.error(`error while checking the device hardware`)
+    }
+  }, [auth])
 
-  /**
+  /** 
    * This function changes the value stored in shared preferences for the view of the notes screen,
    * and also changes the view state to show the notes in a grid or list view.
   */

@@ -15,7 +15,7 @@ export interface Note {
  */
 export type NoteItemProps = {
     note: Note,
-    view: string,
+    onPress: () => void,
 }
 /**
  * Props received by the TopBar component.
@@ -40,3 +40,9 @@ export type TopBarIconProps = {
  * Type for the search value in the notes screen. It can be a string or null.
  */
 export type noteSearchType = string | null
+/**
+ * Type for the FAB button props.
+ */
+export type FABProps = {
+    onPress: () => void
+}

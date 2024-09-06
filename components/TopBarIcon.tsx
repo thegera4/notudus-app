@@ -4,7 +4,12 @@ import { Pressable, StyleSheet } from 'react-native'
 
 export default function TopBarIcon({onPress, iconName, size, color}: TopBarIconProps) {
   return (
-    <Pressable style={({pressed}) => pressed && styles.pressed} onPress={onPress}>
+    <Pressable 
+      style={({pressed}) => (iconName !== "arrow-back") ? (pressed && styles.pressed) : 
+        (pressed ? [styles.pressed, styles.arrowBackIcon] : styles.arrowBackIcon)
+      } 
+      onPress={onPress}
+    >
       <Ionicons name={iconName} size={size} color={color} />
     </Pressable>
   )
@@ -13,5 +18,9 @@ export default function TopBarIcon({onPress, iconName, size, color}: TopBarIconP
 const styles = StyleSheet.create({
   pressed: {
     opacity: 0.5,
+  },
+  arrowBackIcon: {
+    paddingLeft: 8,
+    marginTop: 2,
   }
 })

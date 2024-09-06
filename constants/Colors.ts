@@ -23,4 +23,8 @@ export const Colors = {
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
   },
+  inputs: {
+    textPlaceholder: 'rgba(255, 255, 255, 0.5)',
+    selection: 'green',
+  }
 };

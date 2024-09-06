@@ -3,5 +3,6 @@
  */
 export const ScreenEnum = {
     Notes: 'Notes',
-    Todos: 'Todos'
-} as const;
+    Todos: 'Todos',
+    AddNote: 'Add Note',
+}

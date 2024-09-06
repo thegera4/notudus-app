@@ -12,11 +12,11 @@ import { Note } from '@/types';
 import { notes as notesFromDB } from '@/fakenotes';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as LocalAuthentication from 'expo-local-authentication';
-
+import { router } from 'expo-router';
 /**
  * The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.
 */
-export default function NotesScreen() {
+export default function NotesScreen(props: any) {
 
   const [notes, setNotes] = useState<Note[]>(notesFromDB)
   const [auth, setAuth] = useState<boolean>(false) // change to context if needed
@@ -75,7 +75,7 @@ export default function NotesScreen() {
   /**
    * This function opens the Add Note screen when the FAB is pressed.
   */
-  const handleAddNote = () => console.log('Add Note button pressed')
+  const handleAddNote = () => router.navigate('/addNote')
   /**
    * This function handles the press event of a note item.
   */
@@ -104,8 +104,8 @@ export default function NotesScreen() {
       />
       <FlatList
         data={notes}
-        renderItem={({item}) => view === 'list' ? <ListNoteItem note={item} onPress={handleNotePressed} /> 
-          : <GridNoteItem note={item} onPress={handleNotePressed}/>
+        renderItem={({item}) => view === 'list' ? 
+          <ListNoteItem note={item} onPress={handleNotePressed} /> : <GridNoteItem note={item} onPress={handleNotePressed}/>
         }
         keyExtractor={item => item.id.toString()}
         numColumns={view === 'grid' ? 2 : 1}

@@ -22,11 +22,12 @@ export type NoteItemProps = {
  */
 export type TopBarProps = {
     screen: string,
-    onLockPress: () => void,
+    onLockPress?: () => void,
     auth: boolean,
-    onViewPress: () => void,
+    onViewPress?: () => void,
     view: string,
-    onSearchPress: () => void,
+    onSearchPress?: () => void,
+    onBackPress?: () => void,
 }
 /**
  * Props received by the TopBarIcon component.

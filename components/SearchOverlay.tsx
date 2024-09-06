@@ -2,10 +2,15 @@ import { useState, useEffect } from 'react'
 import { View, TextInput, FlatList, StyleSheet, Modal, TouchableOpacity, Text, KeyboardAvoidingView } from 'react-native'
 import ListNoteItem from '@/components/ListNoteItem'
 import { Note, SearchOverlayProps } from '@/types'
+import { Colors } from '@/constants/Colors'
 
+/**
+  * This is the Search Overlay component, which is opened by tapping the search icon in the TopBar.
+  * It allows the user to search for notes by title or content, and displays the results in a list.
+*/
 export default function SearchOverlay({ visible, notes, onClose, searchTerm, setSearchTerm }: SearchOverlayProps) {
   
-    const [filteredNotes, setFilteredNotes] = useState<Note[]>([])
+  const [filteredNotes, setFilteredNotes] = useState<Note[]>([])
 
   useEffect(() => {
     if (searchTerm) {
@@ -24,10 +29,10 @@ export default function SearchOverlay({ visible, notes, onClose, searchTerm, set
           <TextInput
             style={styles.input}
             placeholder="Search notes..."
-            placeholderTextColor="rgba(255, 255, 255, 0.5)"
+            placeholderTextColor={Colors.inputs.textPlaceholder}
             value={searchTerm}
             onChangeText={setSearchTerm}
-            selectionColor={'green'}
+            selectionColor={Colors.inputs.selection}
           />
           <FlatList
             style={styles.list}

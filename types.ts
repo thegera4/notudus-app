@@ -26,6 +26,7 @@ export type TopBarProps = {
     auth: boolean,
     onViewPress: () => void,
     view: string,
+    onSearchPress: () => void,
 }
 /**
  * Props received by the TopBarIcon component.
@@ -46,3 +47,13 @@ export type noteSearchType = string | null
 export type FABProps = {
     onPress: () => void
 }
+/**
+ * Type for the SearchOverlay component props.
+*/
+export type SearchOverlayProps = {
+    visible: boolean
+    notes: Note[]
+    onClose: () => void
+    searchTerm: string
+    setSearchTerm: (term: string) => void
+  }

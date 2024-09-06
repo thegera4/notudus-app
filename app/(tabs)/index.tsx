@@ -1,10 +1,11 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ListNoteItem from '@/components/ListNoteItem';
 import TopBar from '@/components/TopBar';
 import FAB from '@/components/FAB';
 import GridNoteItem from '@/components/GridNoteItem';
+import SearchOverlay from '@/components/SearchOverlay';
 import { getNotes } from '@/utils/db';
 import { ScreenEnum } from '@/constants/Enums';
 import { Note } from '@/types';
@@ -16,26 +17,24 @@ import * as LocalAuthentication from 'expo-local-authentication';
  * The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.
 */
 export default function NotesScreen() {
+
   const [notes, setNotes] = useState<Note[]>(notesFromDB)
   const [auth, setAuth] = useState<boolean>(false) // change to context if needed
   const [view, setView] = useState<string>('list')
+  const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false)
+  const [searchTerm, setSearchTerm] = useState<string>('')
 
   const filteredNotes = useMemo(() => getNotes(auth, notesFromDB), [auth, notesFromDB]);
 
   useEffect(() => {
     const getView = async () => {
-      try {
-        const value = await AsyncStorage.getItem('view')
-        value !== null && setView(value)
-      } catch (e) {
-        console.error(`error while getting the note list view: ${e}`)
-      }
+      const value = await AsyncStorage.getItem('view')
+      value !== null && setView(value)
     }
     getView()
   }, [])
 
   useEffect(() => { setNotes(filteredNotes) }, [filteredNotes]) 
-
   /**
    * This function handles the authentication of the user when the lock icon is pressed.
    * It uses the LocalAuthentication API to authenticate the user with their fingerprint.
@@ -52,10 +51,10 @@ export default function NotesScreen() {
         setAuth(true)
       }
     } catch (e) {
-      console.error(`error while checking the device hardware`)
+      // cambiar por snackbar
+      Alert.alert('Authentication Error', 'Something went wrong with the authentication. Please try again', [{text: 'OK'}])
     }
   }, [auth])
-
   /** 
    * This function changes the value stored in shared preferences for the view of the notes screen,
    * and also changes the view state to show the notes in a grid or list view.
@@ -73,24 +72,36 @@ export default function NotesScreen() {
       console.error(`error while changing the note list view: ${e}`)
     }
   }, [view])
-
   /**
    * This function opens the Add Note screen when the FAB is pressed.
   */
-  const handleAddNote = () => {
-    console.log('Add Note button pressed');
-  };
-
+  const handleAddNote = () => console.log('Add Note button pressed')
   /**
    * This function handles the press event of a note item.
   */
-  const handleNotePressed = () => {
-    console.log('Note pressed');
-  };
+  const handleNotePressed = () => console.log('Note pressed')
+  /**
+   * This function opens the search overlay when the search icon is pressed.
+  */
+  const handleSearchPress = () => setIsSearchVisible(true)
+  /**
+   * This function closes the search overlay.
+  */
+  const handleCloseSearch = () => {
+    setIsSearchVisible(false)
+    setSearchTerm('')
+  }
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <TopBar screen={ScreenEnum.Notes} onLockPress={handleAuth} auth={auth} onViewPress={handleView} view={view}/>
+      <TopBar 
+        screen={ScreenEnum.Notes} 
+        onLockPress={handleAuth} 
+        auth={auth} 
+        onViewPress={handleView} 
+        view={view} 
+        onSearchPress={handleSearchPress}
+      />
       <FlatList
         data={notes}
         renderItem={({item}) => view === 'list' ? <ListNoteItem note={item} onPress={handleNotePressed} /> 
@@ -102,6 +113,13 @@ export default function NotesScreen() {
         initialNumToRender={10}
       />
       <FAB onPress={handleAddNote}/>
+      <SearchOverlay 
+        visible={isSearchVisible} 
+        notes={notes} 
+        onClose={handleCloseSearch} 
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm} 
+      />
     </SafeAreaView>
   );
 }

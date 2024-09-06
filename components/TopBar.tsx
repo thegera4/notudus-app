@@ -7,7 +7,7 @@ import { TopBarProps, noteSearchType } from '@/types'
 /**
   * This is the App Bar component, which shows different options and icons, depending on the screen (notes or todos).
 */
-export default function TopBar({screen, onLockPress, auth, onViewPress, view}: TopBarProps) {
+export default function TopBar({screen, onLockPress, auth, onViewPress, view, onSearchPress}: TopBarProps) {
   const [search, setSearch] = useState<noteSearchType>(null)
 
   /**
@@ -21,7 +21,7 @@ export default function TopBar({screen, onLockPress, auth, onViewPress, view}: T
       { screen === ScreenEnum.Notes &&
         <View style={styles.notesIcons}>
           <TopBarIcon onPress={onLockPress} iconName={auth ? 'lock-open' : 'lock-closed'} size={24} color="white" />
-          <TopBarIcon onPress={handleSearch} iconName="search" size={24} color="white" />
+          <TopBarIcon onPress={onSearchPress} iconName="search" size={24} color="white" />
           <TopBarIcon onPress={onViewPress} iconName={view === 'list' ? 'list' : 'grid'} size={24} color="white" />
         </View>
       }

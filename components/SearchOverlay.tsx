@@ -34,6 +34,7 @@ export default function SearchOverlay({ visible, notes, onClose, searchTerm, set
               value={searchTerm}
               onChangeText={setSearchTerm}
               selectionColor={Colors.inputs.selection}
+              autoFocus={true}
             />
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Text style={styles.closeButtonText}>Close</Text>

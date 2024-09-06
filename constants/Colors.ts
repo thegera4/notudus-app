@@ -24,7 +24,7 @@ export const Colors = {
     tabIconSelected: tintColorDark,
   },
   inputs: {
-    textPlaceholder: 'rgba(255, 255, 255, 0.5)',
+    textPlaceholder: 'rgba(255, 255, 255, 0.3)',
     selection: 'green',
   }
 };

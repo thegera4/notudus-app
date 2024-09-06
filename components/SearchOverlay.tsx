@@ -23,26 +23,28 @@ export default function SearchOverlay({ visible, notes, onClose, searchTerm, set
   }, [searchTerm, notes])
 
   return (
-    <Modal visible={visible} transparent={true} animationType="fade">
+    <Modal visible={visible} transparent={true} animationType="none">
       <KeyboardAvoidingView style={styles.overlay} behavior="padding">
         <View style={styles.container}>
-          <TextInput
-            style={styles.input}
-            placeholder="Search notes..."
-            placeholderTextColor={Colors.inputs.textPlaceholder}
-            value={searchTerm}
-            onChangeText={setSearchTerm}
-            selectionColor={Colors.inputs.selection}
-          />
+          <View style={styles.searchBar}>
+            <TextInput
+              style={styles.input}
+              placeholder="Search notes..."
+              placeholderTextColor={Colors.inputs.textPlaceholder}
+              value={searchTerm}
+              onChangeText={setSearchTerm}
+              selectionColor={Colors.inputs.selection}
+            />
+            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
           <FlatList
             style={styles.list}
             data={filteredNotes}
             renderItem={({ item }) => <ListNoteItem note={item} onPress={() => {}} />}
             keyExtractor={item => item.id.toString()}
           />
-          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>Close</Text>
-          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </Modal>
@@ -52,20 +54,24 @@ export default function SearchOverlay({ visible, notes, onClose, searchTerm, set
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   container: {
-    width: '90%',
+    width: '95%',
     backgroundColor: '#303030',
     borderRadius: 10,
     padding: 20,
-    maxHeight: '90%',
+    maxHeight: '95%',
+  },
+  searchBar: {
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   input: {
+    flex: 2,
     height: 40,
-    borderColor: 'gray',
+    borderColor: 'rgba(255, 255, 255, 0.15)',
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 20,
@@ -76,8 +82,9 @@ const styles = StyleSheet.create({
     flexGrow: 0, // Prevent the list from growing indefinitely
   },
   closeButton: {
-    marginTop: 20,
     alignItems: 'center',
+    marginLeft: 8,
+    marginTop: 10,
   },
   closeButtonText: {
     color: 'green',

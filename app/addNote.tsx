@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TopBar from '@/components/TopBar';
 import { ScreenEnum } from '@/constants/Enums';
@@ -25,6 +25,7 @@ export default function AddNoteScreen() {
   const onBack = () => { router.navigate('/') }
 
   return (
+    <KeyboardAvoidingView style={styles.keyboardAvoiding} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
     <SafeAreaView style={styles.safeAreaView}>
       <TopBar 
         screen={ScreenEnum.AddNote} 
@@ -33,7 +34,7 @@ export default function AddNoteScreen() {
         view={ScreenEnum.AddNote}
         onBackPress={onBack}
       />
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <TextInput
           style={styles.titleInput}
           placeholder="Note Title"
@@ -41,6 +42,7 @@ export default function AddNoteScreen() {
           selectionColor={Colors.inputs.selection}
           value={title}
           onChangeText={setTitle}
+          autoFocus={true}
         />
         <TextInput
           multiline
@@ -51,12 +53,16 @@ export default function AddNoteScreen() {
           value={content}
           onChangeText={setContent}
         />
-      </View>
+      </ScrollView>
     </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  keyboardAvoiding: {
+    flex: 1,
+  },
   safeAreaView: {
     flex: 1,
   },
@@ -68,13 +74,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
     color: 'white',
-
   },
   contentInput: {
     fontSize: 16,
-    flex: 1,
-    textAlignVertical: 'top',
+    marginBottom: 16,
     color: 'white',
-    backgroundColor: 'blue',
   },
 });

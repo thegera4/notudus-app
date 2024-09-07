@@ -5,6 +5,8 @@ import TopBar from '@/components/TopBar';
 import { ScreenEnum } from '@/constants/Enums';
 import { Colors } from '@/constants/Colors';
 import { router } from 'expo-router';
+import Note from '@/models/Note';
+import { notes } from '@/fakenotes';
 
 /**
   * This is the Add Note screen where you can define and add a new note, as well as update an existing note.
@@ -12,17 +14,31 @@ import { router } from 'expo-router';
 */
 export default function AddNoteScreen() {
 
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [title, setTitle] = useState<string>('');
+  const [content, setContent] = useState<string>('');
+  const [locked, setLocked] = useState<number>(0);
 
   /**
   * This function marks the note as "private" when the user taps the lock icon on the top bar.
   */
-  const lockNote = () => { console.log('make private note') }
+  const lockNote = () => { setLocked(locked === 0 ? 1 : 0) }
   /**
   * This function handles the back event to save the new notes, or the updated information of an existing note.
   */
-  const onBack = () => { router.navigate('/') }
+  const onBack = () => { 
+    const newNote: Note = {
+      id: Date.now(),
+      title,
+      content,
+      locked,
+      date: new Date().toISOString().split('T')[0],
+    }
+    
+    // save the note to the database
+    notes.push(newNote) // replace with the actual database function
+
+    router.navigate('/') 
+  }
 
   return (
     <KeyboardAvoidingView style={styles.keyboardAvoiding} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -30,7 +46,7 @@ export default function AddNoteScreen() {
       <TopBar 
         screen={ScreenEnum.AddNote} 
         onLockPress={lockNote} 
-        auth={false} 
+        auth={locked === 1} 
         view={ScreenEnum.AddNote}
         onBackPress={onBack}
       />

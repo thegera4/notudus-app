@@ -12,7 +12,7 @@ export default function ListNoteItem({note, onPress}: NoteItemProps) {
             <View style={styles.textContainer}>
                 {note.locked === 1 && <Text style={styles.locked}>Private</Text>}
                 <Text style={styles.noteTitle}>{note.title}</Text>
-                <Text style={styles.noteDescription}>{limitContent(note.content, 40)}</Text>
+                <Text style={styles.noteDescription} numberOfLines={2}>{limitContent(note.content, 40)}</Text>
                 <Text style={styles.noteDate}>Last modified: {note.date}</Text>
             </View>
         </View>
@@ -33,7 +33,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        maxHeight: 100
     },
     textContainer: {
         flex: 1,

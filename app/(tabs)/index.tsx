@@ -13,6 +13,8 @@ import { notes as notesFromDB } from '@/fakenotes';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as LocalAuthentication from 'expo-local-authentication';
 import { router } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
+
 /**
  * The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.
 */
@@ -26,6 +28,7 @@ export default function NotesScreen(props: any) {
 
   const filteredNotes = useMemo(() => getNotes(auth, notesFromDB), [auth, notesFromDB]);
 
+  // get the view from shared preferences if it exists
   useEffect(() => {
     const getView = async () => {
       const value = await AsyncStorage.getItem('view')
@@ -34,6 +37,22 @@ export default function NotesScreen(props: any) {
     getView()
   }, [])
 
+  // update the notes when a new note is added/updated (onBack from AddNoteScreen)
+  useFocusEffect(
+    useCallback(() => { 
+      const loadNotes = async () => {
+        try{
+          const notes = await getNotes(auth, notesFromDB)
+          setNotes(notes)
+        } catch (e) {
+          console.error(`error while loading notes: ${e}`) //change for snackbar
+        }
+      }
+      loadNotes()
+    }, [])
+  )
+
+  // sets the "notes" state (when the user is authenticated) to hide/show the private notes.
   useEffect(() => { setNotes(filteredNotes) }, [filteredNotes]) 
   /**
    * This function handles the authentication of the user when the lock icon is pressed.

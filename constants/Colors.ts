@@ -26,5 +26,8 @@ export const Colors = {
   inputs: {
     textPlaceholder: 'rgba(255, 255, 255, 0.3)',
     selection: 'green',
-  }
+  },
+  bottomNavigation: {
+    active: 'green',
+  },
 };

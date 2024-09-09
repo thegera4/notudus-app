@@ -15,7 +15,7 @@ export interface Note {
  */
 export type NoteItemProps = {
     note: Note,
-    onPress: () => void,
+    onPress: (note: Note) => void,
 }
 /**
  * Props received by the TopBar component.

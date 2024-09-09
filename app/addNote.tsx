@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { TextInput, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TopBar from '@/components/TopBar';
 import { ScreenEnum } from '@/constants/Enums';
 import { Colors } from '@/constants/Colors';
-import { router } from 'expo-router';
+import { router, useGlobalSearchParams, useLocalSearchParams } from 'expo-router';
 import Note from '@/models/Note';
 import { notes } from '@/fakenotes';
 
@@ -14,9 +14,23 @@ import { notes } from '@/fakenotes';
 */
 export default function AddNoteScreen() {
 
-  const [title, setTitle] = useState<string>('');
-  const [content, setContent] = useState<string>('');
-  const [locked, setLocked] = useState<number>(0);
+  const localParams = useLocalSearchParams()
+
+  const [title, setTitle] = useState<string>('')
+  const [content, setContent] = useState<string>('')
+  const [locked, setLocked] = useState<number>(0)
+  const [currentNote, setCurrentNote] = useState<Note>()
+
+  //when screen loads, read the localParams and make it a valid object to work with
+  useEffect(() => { 
+    if(localParams){
+      const alreadySavedNote = JSON.parse(localParams.note as string)
+      setCurrentNote(alreadySavedNote)
+      setTitle(alreadySavedNote.title)
+      setContent(alreadySavedNote.content)
+      setLocked(alreadySavedNote.locked)
+    }
+  }, []) 
 
   /**
   * This function marks the note as "private" when the user taps the lock icon on the top bar.
@@ -26,16 +40,27 @@ export default function AddNoteScreen() {
   * This function handles the back event to save the new notes, or the updated information of an existing note.
   */
   const onBack = () => { 
-    const newNote: Note = {
-      id: Date.now(),
-      title,
-      content,
-      locked,
-      date: new Date().toISOString().split('T')[0],
+    if (title === '' || content === '' || currentNote!.title !== "" || currentNote!.content !== "") {
+      //TBD...maybe show a snackbar?
+    } else{
+      const newNote: Note = {
+        id: Date.now(),
+        title,
+        content,
+        locked,
+        date: new Date().toISOString().split('T')[0],
+      }
+      
+      // save the note to the database
+      if (note) {
+        const index = notes.findIndex(n => n.id === note.id);
+        if (index !== -1) {
+          notes[index] = newNote;
+        }
+      } else {
+        notes.push(newNote);
+      }
     }
-    
-    // save the note to the database
-    notes.push(newNote) // replace with the actual database function
 
     router.navigate('/') 
   }

@@ -98,7 +98,16 @@ export default function NotesScreen(props: any) {
   /**
    * This function handles the press event of a note item.
   */
-  const handleNotePressed = () => console.log('Note pressed')
+  const handleNotePressed = (note: Note) => {
+    const noteData = {
+      id: note.id,
+      title: note.title,
+      content: note.content,
+      locked: note.locked,
+      date: note.date,
+    };
+    router.push({pathname: '/addNote', params: { note: JSON.stringify(noteData) }})
+  }
   /**
    * This function opens the search overlay when the search icon is pressed.
   */

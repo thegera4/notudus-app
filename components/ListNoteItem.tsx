@@ -1,23 +1,27 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 import { limitContent } from '@/utils/utils'
 import { NoteItemProps } from '@/types';
+import { GestureHandlerEvent } from 'react-native-reanimated/lib/typescript/reanimated2/hook';
 
 /**
  * Card that shows the title, description and last modified date of a note in the Notes Screen.
  */
 export default function ListNoteItem({note, onPress}: NoteItemProps) {
-  return (
-    <Pressable style={({pressed}) => pressed && styles.pressed} onPress={onPress}>
-        <View style={styles.card}>
-            <View style={styles.textContainer}>
-                {note.locked === 1 && <Text style={styles.locked}>Private</Text>}
-                <Text style={styles.noteTitle}>{note.title}</Text>
-                <Text style={styles.noteDescription} numberOfLines={2}>{limitContent(note.content, 40)}</Text>
-                <Text style={styles.noteDate}>Last modified: {note.date}</Text>
+
+    const handlePress = () => onPress(note);
+
+    return (
+        <Pressable style={({pressed}) => pressed && styles.pressed} onPress={handlePress}>
+            <View style={styles.card}>
+                <View style={styles.textContainer}>
+                    {note.locked === 1 && <Text style={styles.locked}>Private</Text>}
+                    <Text style={styles.noteTitle}>{note.title}</Text>
+                    <Text style={styles.noteDescription} numberOfLines={2}>{limitContent(note.content, 40)}</Text>
+                    <Text style={styles.noteDate}>Last modified: {note.date}</Text>
+                </View>
             </View>
-        </View>
-    </Pressable>
-  )
+        </Pressable>
+    )
 }
 
 const styles = StyleSheet.create({

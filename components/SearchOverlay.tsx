@@ -3,6 +3,7 @@ import { View, TextInput, FlatList, StyleSheet, Modal, TouchableOpacity, Text, K
 import ListNoteItem from '@/components/ListNoteItem'
 import { Note, SearchOverlayProps } from '@/types'
 import { Colors } from '@/constants/Colors'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 /**
   * This is the Search Overlay component, which is opened by tapping the search icon in the TopBar.
@@ -64,6 +65,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     maxHeight: '95%',
+    marginTop: 20,
   },
   searchBar: {
     flexDirection: 'row',

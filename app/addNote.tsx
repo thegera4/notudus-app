@@ -50,17 +50,8 @@ export default function AddNoteScreen() {
         locked,
         date: new Date().toISOString().split('T')[0],
       }
-      
-      // save the note to the database
-      if (note) {
-        const index = notes.findIndex(n => n.id === note.id);
-        if (index !== -1) {
-          notes[index] = newNote;
-        }
-      } else {
-        notes.push(newNote);
+      notes.push(newNote);
       }
-    }
 
     router.navigate('/') 
   }

@@ -69,4 +69,4 @@ export const notes = [
         date: '2021-09-10',
         locked: 0,
     }
-    ];
+]

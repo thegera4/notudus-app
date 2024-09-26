@@ -15,10 +15,8 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 
-/**
- * The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.
-*/
-export default function NotesScreen(props: any) {
+/** The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.*/
+export default function NotesScreen() {
 
   const [notes, setNotes] = useState<Note[]>(notesFromDB)
   const [auth, setAuth] = useState<boolean>(false) // change to context if needed
@@ -26,7 +24,7 @@ export default function NotesScreen(props: any) {
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false)
   const [searchTerm, setSearchTerm] = useState<string>('')
 
-  const filteredNotes = useMemo(() => getNotes(auth, notesFromDB), [auth, notesFromDB]);
+  const filteredNotes = useMemo(() => getNotes(auth, notesFromDB), [auth, notesFromDB])
 
   // get the view from shared preferences if it exists
   useEffect(() => {
@@ -42,7 +40,7 @@ export default function NotesScreen(props: any) {
     useCallback(() => { 
       const loadNotes = async () => {
         try{
-          const notes = await getNotes(auth, notesFromDB)
+          const notes = getNotes(auth, notesFromDB)
           setNotes(notes)
         } catch (e) {
           console.error(`error while loading notes: ${e}`) //change for snackbar
@@ -54,6 +52,7 @@ export default function NotesScreen(props: any) {
 
   // sets the "notes" state (when the user is authenticated) to hide/show the private notes.
   useEffect(() => { setNotes(filteredNotes) }, [filteredNotes]) 
+
   /**
    * This function handles the authentication of the user when the lock icon is pressed.
    * It uses the LocalAuthentication API to authenticate the user with their fingerprint.
@@ -74,6 +73,7 @@ export default function NotesScreen(props: any) {
       Alert.alert('Authentication Error', 'Something went wrong with the authentication. Please try again', [{text: 'OK'}])
     }
   }, [auth])
+
   /** 
    * This function changes the value stored in shared preferences for the view of the notes screen,
    * and also changes the view state to show the notes in a grid or list view.
@@ -91,13 +91,11 @@ export default function NotesScreen(props: any) {
       console.error(`error while changing the note list view: ${e}`)
     }
   }, [view])
-  /**
-   * This function opens the Add Note screen when the FAB is pressed.
-  */
+
+  /** This function opens the Add Note screen when the FAB is pressed.*/
   const handleAddNote = () => router.navigate('/addNote')
-  /**
-   * This function handles the press event of a note item.
-  */
+
+  /** This function handles the press event of a note item.*/
   const handleNotePressed = (note: Note) => {
     const noteData = {
       id: note.id,
@@ -108,17 +106,12 @@ export default function NotesScreen(props: any) {
     };
     router.push({pathname: '/addNote', params: { note: JSON.stringify(noteData) }})
   }
-  /**
-   * This function opens the search overlay when the search icon is pressed.
-  */
+
+  /** This function opens the search overlay when the search icon is pressed.*/
   const handleSearchPress = () => setIsSearchVisible(true)
-  /**
-   * This function closes the search overlay.
-  */
-  const handleCloseSearch = () => {
-    setIsSearchVisible(false)
-    setSearchTerm('')
-  }
+
+  /** This function closes the search overlay.*/
+  const handleCloseSearch = () => { setIsSearchVisible(false); setSearchTerm('') }
 
   return (
     <SafeAreaView style={styles.safeAreaView}>

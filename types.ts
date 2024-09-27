@@ -45,3 +45,8 @@ export type SearchOverlayProps = {
     searchTerm: string
     setSearchTerm: (term: string) => void
 }
+/**Type for the AuthContext.*/
+export interface AuthContextType {
+    auth: boolean;
+    setAuth: React.Dispatch<React.SetStateAction<boolean>>
+}

@@ -15,6 +15,8 @@ import { updateNote } from '@/utils/db';
 */
 export default function AddNoteScreen() {
 
+  //TODO: Add code for no notes case (icon with animation).
+
   const localParams = useLocalSearchParams()
 
   const [title, setTitle] = useState<string>('')

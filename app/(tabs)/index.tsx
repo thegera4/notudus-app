@@ -14,15 +14,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as LocalAuthentication from 'expo-local-authentication';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
+import { useAuth } from '@/contexts/authContext';
 
-/** The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.*/
+/**The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.*/
 export default function NotesScreen() {
 
   const [notes, setNotes] = useState<Note[]>(notesFromDB)
-  const [auth, setAuth] = useState<boolean>(false) // change to context if needed
   const [view, setView] = useState<string>('list')
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false)
   const [searchTerm, setSearchTerm] = useState<string>('')
+
+  const { auth, setAuth } = useAuth() // get the auth state from the context
 
   const filteredNotes = useMemo(() => getNotes(auth, notesFromDB), [auth, notesFromDB])
 
@@ -43,7 +45,8 @@ export default function NotesScreen() {
           const notes = getNotes(auth, notesFromDB)
           setNotes(notes)
         } catch (e) {
-          console.error(`error while loading notes: ${e}`) //change for snackbar
+          //TODO: cambiar por snackbar
+          console.error(`error while loading notes: ${e}`)
         }
       }
       loadNotes()
@@ -54,22 +57,17 @@ export default function NotesScreen() {
   useEffect(() => { setNotes(filteredNotes) }, [filteredNotes]) 
 
   /**
-   * This function handles the authentication of the user when the lock icon is pressed.
-   * It uses the LocalAuthentication API to authenticate the user with their fingerprint.
-   * If the user is already authenticated, it hides the private notes.
+   * This function handles the authentication of the user when the lock icon is pressed. It uses the LocalAuthentication API to 
+   * authenticate the user with their fingerprint/password. If the user is already authenticated, it hides the private notes.
+   * @returns {void} This function does not return anything.
   */
-  const handleAuth = useCallback(async () => { 
-    if(auth){
-      setAuth(false)
-      return
-    }
+  const handleAuth = useCallback(async (): Promise<void> => { 
+    if(auth){ setAuth(false); return }
     try{
       const result = await LocalAuthentication.authenticateAsync()
-      if (result.success){
-        setAuth(true)
-      }
+      if (result.success){ setAuth(true) }
     } catch (e) {
-      // cambiar por snackbar
+      //TODO: cambiar por snackbar
       Alert.alert('Authentication Error', 'Something went wrong with the authentication. Please try again', [{text: 'OK'}])
     }
   }, [auth])
@@ -77,8 +75,9 @@ export default function NotesScreen() {
   /** 
    * This function changes the value stored in shared preferences for the view of the notes screen,
    * and also changes the view state to show the notes in a grid or list view.
+   * @returns {void} This function does not return anything.
   */
-  const handleView = useCallback(async () => {
+  const handleView = useCallback(async (): Promise<void> => {
     try {
       if (view === 'list') {
         await AsyncStorage.setItem('view', 'grid')
@@ -88,15 +87,20 @@ export default function NotesScreen() {
         setView('list')
       }
     } catch (e) {
+      //TODO: cambiar por snackbar
       console.error(`error while changing the note list view: ${e}`)
     }
   }, [view])
 
   /** This function opens the Add Note screen when the FAB is pressed.*/
-  const handleAddNote = () => router.navigate('/addNote')
+  const handleAddNote = (): void => router.navigate('/addNote')
 
-  /** This function handles the press event of a note item.*/
-  const handleNotePressed = (note: Note) => {
+  /** 
+   * This function handles the press event of a note item (navigates to the Add Note screen with the note data to be edited).
+   * @param {Note} note - The note object that contains the information to be edited.
+   * @returns {void} This function does not return anything.
+   * */
+  const handleNotePressed = (note: Note): void => {
     const noteData = {
       id: note.id,
       title: note.title,
@@ -108,10 +112,10 @@ export default function NotesScreen() {
   }
 
   /** This function opens the search overlay when the search icon is pressed.*/
-  const handleSearchPress = () => setIsSearchVisible(true)
+  const handleSearchPress = (): void => setIsSearchVisible(true)
 
   /** This function closes the search overlay.*/
-  const handleCloseSearch = () => { setIsSearchVisible(false); setSearchTerm('') }
+  const handleCloseSearch = (): void => { setIsSearchVisible(false); setSearchTerm('') }
 
   return (
     <SafeAreaView style={styles.safeAreaView}>

@@ -19,3 +19,13 @@ export const updateNote = (noteId: number, note: Note): void => {
     const noteIndex = notes.findIndex(note => note.id.toString() === noteId.toString())
     notes[noteIndex] = { ...note, id: Number(note.id) }
 }
+
+/**
+ * This function deletes a note from the database.
+ * @param {number} noteId - A string that represents the id of the note to be updated.
+ * @returns {void} This function does not return anything.
+*/
+export const deleteNote = (noteId: number): void => {
+    const noteIndex = notes.findIndex(note => note.id.toString() === noteId.toString())
+    notes.splice(noteIndex, 1)
+}

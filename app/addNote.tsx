@@ -33,27 +33,35 @@ export default function AddNoteScreen() {
     }
   }, [localParams.note])
 
-  /** This function marks the note as "private" when the user taps the lock icon on the top bar.*/
-  const lockNote = () => { setLocked(locked === 0 ? 1 : 0) }
+  /**This function marks the note as "private" when the user taps the lock icon on the top bar.*/
+  const lockNote = () => setLocked(locked === 0 ? 1 : 0)
 
-  /** This function handles the back event to save the new notes, or the updated information of an existing note.*/
+  /**This function handles the back event to save the new notes, or the updated information of an existing note.*/
   const onBack = () => { 
-    if (title === '' || content === '') { return } 
-    const preparedNote: Note = {
-      id: currentNote ? currentNote.id : notes.length + 1,
-      title,
-      content,
-      locked,
-      date: new Date().toISOString().split('T')[0],
+    if (title !== '' || content !== '') { 
+      const preparedNote: Note = {
+        id: currentNote ? currentNote.id : notes.length + 1,
+        title,
+        content,
+        locked,
+        date: new Date().toISOString().split('T')[0],
+      }
+      currentNote ? updateNote(currentNote.id, preparedNote) : notes.push(preparedNote)
     }
-    currentNote ? updateNote(currentNote.id, preparedNote) : notes.push(preparedNote)
     router.navigate('/') 
   }
 
   return (
     <KeyboardAvoidingView style={styles.keyboardAvoiding} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
     <SafeAreaView style={styles.safeAreaView}>
-      <TopBar screen={ScreenEnum.AddNote} onLockPress={lockNote} auth={locked === 1} view={ScreenEnum.AddNote} onBackPress={onBack}/>
+      <TopBar 
+        screen={ScreenEnum.AddNote} 
+        onLockPress={lockNote} 
+        auth={locked === 1} 
+        view={ScreenEnum.AddNote} 
+        onBackPress={onBack} 
+        currentNote={currentNote} 
+      />
       <ScrollView style={styles.container}>
         <TextInput
           style={styles.titleInput}

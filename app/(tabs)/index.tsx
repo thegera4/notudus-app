@@ -50,7 +50,7 @@ export default function NotesScreen() {
         }
       }
       loadNotes()
-    }, [])
+    }, [auth])
   )
 
   // sets the "notes" state (when the user is authenticated) to hide/show the private notes.

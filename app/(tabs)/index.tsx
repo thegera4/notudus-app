@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback, useMemo } from 'react'
-import { FlatList, StyleSheet, Alert } from 'react-native'
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
+import { FlatList, StyleSheet, Alert, View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ListNoteItem from '@/components/ListNoteItem'
 import TopBar from '@/components/TopBar'
@@ -17,6 +17,8 @@ import { useFocusEffect } from '@react-navigation/native'
 import { useAuth } from '@/hooks/useAuth'
 import {addNoteRoute} from "@/constants/Routes"
 import { Strings}  from '@/constants/Strings'
+import LottieView from 'lottie-react-native';
+import * as emptyAnimation from '@/assets/animations/empty.json'
 
 /**The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.*/
 export default function NotesScreen() {
@@ -28,7 +30,12 @@ export default function NotesScreen() {
 
   const { auth, setAuth } = useAuth()
 
+  const animation = useRef<LottieView>(null);
+
   const filteredNotes = useMemo(() => getNotes(auth, notesFromDB), [auth, notesFromDB])
+
+  // control the animation
+  useEffect(() => { animation.current?.play() }, [])
 
   // get the view from shared preferences if it exists
   useEffect(() => {
@@ -119,6 +126,7 @@ export default function NotesScreen() {
   /** This function closes the search overlay.*/
   const handleCloseSearch = (): void => { setIsSearchVisible(false); setSearchTerm('') }
 
+  console.log("current note is locked?: ", notes.find(note => note.id === 1))
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <TopBar 
@@ -129,16 +137,23 @@ export default function NotesScreen() {
         view={view} 
         onSearchPress={handleSearchPress}
       />
-      <FlatList
-        data={notes}
-        renderItem={({item}) => view === 'list' ? 
-          <ListNoteItem note={item} onPress={handleNotePressed} /> : <GridNoteItem note={item} onPress={handleNotePressed}/>
-        }
-        keyExtractor={item => item.id.toString()}
-        numColumns={view === 'grid' ? 2 : 1}
-        key={view} // key prop is needed to re-render the FlatList when the view changes
-        initialNumToRender={10}
-      />
+      { notes.length === 0 ?
+        <View style={styles.animationContainer}>
+          <LottieView ref={animation} source={emptyAnimation} autoPlay loop={false} style={styles.animation}/>
+          <Text style={styles.emptyText}>No notes! Add a new note with the + button.</Text>
+        </View>
+        :
+        <FlatList
+          data={notes}
+          renderItem={({item}) => view === 'list' ? 
+            <ListNoteItem note={item} onPress={handleNotePressed} /> : <GridNoteItem note={item} onPress={handleNotePressed}/>
+          }
+          keyExtractor={item => item.id.toString()}
+          numColumns={view === 'grid' ? 2 : 1}
+          key={view} // key prop is needed to re-render the FlatList when the view changes
+          initialNumToRender={10}
+        />
+      }
       <FAB onPress={handleAddNote}/>
       <SearchOverlay 
         visible={isSearchVisible}
@@ -154,7 +169,8 @@ export default function NotesScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeAreaView: {
-    flex: 1,
-  },
-});
+  safeAreaView: { flex: 1 },
+  animationContainer: { flex: 1, alignItems: 'center', marginTop: 80 },
+  animation: { width: 200, height: 200, alignSelf: 'center' },
+  emptyText: { color: 'white', fontSize: 16, textAlign: 'center' },
+})

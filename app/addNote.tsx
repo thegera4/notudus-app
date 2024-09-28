@@ -75,6 +75,8 @@ export default function AddNoteScreen() {
   /**This function handles the shield icon press event (show the private text to save the note as private).*/
   const onShieldPress = () => showPrivateText ? setShowPrivateText(false) : setShowPrivateText(true)
 
+  console.log("private?: ", showPrivateText)
+  console.log("currentnote.id: ", currentNote?.id)
   return (
     <KeyboardAvoidingView style={styles.keyboardAvoiding} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
     <SafeAreaView style={styles.safeAreaView}>
@@ -89,7 +91,7 @@ export default function AddNoteScreen() {
         newNoteLocked={showPrivateText}
       />
       <ScrollView style={styles.container}>
-        { (auth && currentNote && locked === 1) || (showPrivateText) && <PrivateText/> }
+        { ((auth && currentNote && locked === 1) || (showPrivateText)) && <PrivateText/> }
         <TextInput
           style={styles.titleInput}
           placeholder="Note Title"

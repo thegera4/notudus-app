@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 import { limitContent } from '@/utils/utils'
 import { NoteItemProps } from '@/types';
+import PrivateText from './PrivateText';
 
 /** Card that shows the title, description and last modified date of a note in the Notes Screen.*/
 export default function ListNoteItem({note, onPress}: NoteItemProps) {
@@ -11,7 +12,7 @@ export default function ListNoteItem({note, onPress}: NoteItemProps) {
     <Pressable style={({pressed}) => pressed && styles.pressed} onPress={handlePress}>
       <View style={styles.card}>
         <View style={styles.textContainer}>
-          {note.locked === 1 && <Text style={styles.locked}>Private</Text>}
+          {note.locked === 1 && <PrivateText />}
           <Text style={styles.noteTitle}>{note.title}</Text>
           <Text style={styles.noteDescription} numberOfLines={2}>{limitContent(note.content, 40)}</Text>
           <Text style={styles.noteDate}>Last modified: {note.date}</Text>
@@ -24,6 +25,9 @@ export default function ListNoteItem({note, onPress}: NoteItemProps) {
 const styles = StyleSheet.create({
   pressed: { opacity: 0.5 },
   textContainer: { flex: 1 },
+  noteDate: { color: 'white', opacity: 0.5 },
+  noteDescription: { color: 'white', opacity: 0.9 },
+  noteTitle: { color: 'white', fontSize: 20, fontWeight: 'bold' },
   card: {
     backgroundColor: '#212121',
     padding: 10,
@@ -35,23 +39,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     maxHeight: 100
-  },
-  noteTitle: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold'
-  },
-  noteDescription: {
-    color: 'white',
-    opacity: 0.9
-  },
-  noteDate: {
-    color: 'white',
-    opacity: 0.5
-  },
-  locked: {
-    color: 'green',
-    borderColor: 'green',
-    fontWeight: 'bold',
   },
 });

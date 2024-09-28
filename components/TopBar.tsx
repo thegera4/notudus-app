@@ -30,11 +30,6 @@ export default function TopBar({screen, onLockPress, auth, onViewPress, view, on
           {onViewPress && <TopBarIcon onPress={onViewPress} iconName={view === 'list' ? 'list' : 'grid'} size={24} color="white" />}
         </View>
       }
-      { screen === ScreenEnum.AddNote &&
-        <View style={styles.notesIcons}>
-          {onLockPress && <TopBarIcon onPress={onLockPress} iconName={auth ? 'lock-open' : 'lock-closed'} size={24} color="white" />}
-        </View>
-      }
       { screen === ScreenEnum.AddNote && currentNote &&
         <View style={styles.notesIcons}>
           <TopBarIcon onPress={onDeletePress} iconName={'trash'} size={24} color="white" />
@@ -45,24 +40,18 @@ export default function TopBar({screen, onLockPress, auth, onViewPress, view, on
 }
 
 const getStyles = (screen: string) => StyleSheet.create({
-  mainTopBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  todosIcon: { paddingRight: 16 },
+  mainTopBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  screenTitle: {
+    color: 'white',
+    fontSize: 28,
+    fontWeight: 'bold',
+    paddingLeft: 16,
   },
   notesIcons: {
     flexDirection: 'row',
     justifyContent: screen !== ScreenEnum.AddNote ? 'space-between' : 'flex-end',
     width: 130,
     paddingRight: 16,
-  },
-  todosIcon: {
-    paddingRight: 16,
-  },
-  screenTitle: {
-    color: 'white',
-    fontSize: 28,
-    fontWeight: 'bold',
-    paddingLeft: 16,
   },
 })

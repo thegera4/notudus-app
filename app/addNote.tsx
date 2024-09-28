@@ -8,6 +8,8 @@ import { router, useLocalSearchParams } from 'expo-router';
 import Note from '@/models/Note';
 import { notes } from '@/fakenotes';
 import { updateNote } from '@/utils/db';
+import PrivateText from '@/components/PrivateText';
+import { useAuth } from '@/contexts/authContext';
 
 /**
   * This is the Add Note screen where you can define and add a new note, as well as update an existing note.
@@ -23,6 +25,8 @@ export default function AddNoteScreen() {
   const [content, setContent] = useState<string>('')
   const [locked, setLocked] = useState<number>(0)
   const [currentNote, setCurrentNote] = useState<Note>()
+
+  const { auth } = useAuth()
 
   // Read the localParams and make it a valid object to work with (used to show the note if it exists).
   useEffect(() => { 
@@ -65,6 +69,7 @@ export default function AddNoteScreen() {
         currentNote={currentNote} 
       />
       <ScrollView style={styles.container}>
+        { auth && currentNote && locked === 1 && <PrivateText/> }
         <TextInput
           style={styles.titleInput}
           placeholder="Note Title"

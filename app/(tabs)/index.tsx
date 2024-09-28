@@ -24,7 +24,7 @@ export default function NotesScreen() {
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false)
   const [searchTerm, setSearchTerm] = useState<string>('')
 
-  const { auth, setAuth } = useAuth() // get the auth state from the context
+  const { auth, setAuth } = useAuth()
 
   const filteredNotes = useMemo(() => getNotes(auth, notesFromDB), [auth, notesFromDB])
 

@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   arrowBackIcon: {
-    paddingLeft: 8,
+    paddingLeft: 13,
     marginTop: 2,
   }
 })

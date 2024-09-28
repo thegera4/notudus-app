@@ -1,3 +1,4 @@
+import React from "react"
 import { Ionicons } from "@expo/vector-icons"
 
 /**Note model type.*/
@@ -8,11 +9,13 @@ export interface Note {
     locked: number;
     date: string;
 }
+
 /**Props received by the NoteItem component.*/
 export type NoteItemProps = {
     note: Note,
     onPress: (note: Note) => void,
 }
+
 /**Props received by the TopBar component.*/
 export type TopBarProps = {
     screen: string,
@@ -26,6 +29,7 @@ export type TopBarProps = {
     onShieldPress?: () => void,
     newNoteLocked?: boolean,
 }
+
 /**Props received by the TopBarIcon component.*/
 export type TopBarIconProps = {
     onPress: () => void,
@@ -33,12 +37,12 @@ export type TopBarIconProps = {
     size: number,
     color: string,
 }
-/**Type for the search value in the notes screen. It can be a string or null.*/
-export type noteSearchType = string | null
+
 /**Type for the FAB button props.*/
 export type FABProps = {
     onPress: () => void
 }
+
 /**Type for the SearchOverlay component props.*/
 export type SearchOverlayProps = {
     visible: boolean
@@ -46,7 +50,9 @@ export type SearchOverlayProps = {
     onClose: () => void
     searchTerm: string
     setSearchTerm: (term: string) => void
+    handleNotePressed: () => void
 }
+
 /**Type for the AuthContext.*/
 export interface AuthContextType {
     auth: boolean;

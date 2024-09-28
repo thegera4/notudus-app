@@ -1,6 +1,6 @@
-import { FABProps } from '@/types';
-import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import { FABProps } from '@/types'
+import { Ionicons } from '@expo/vector-icons'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 /**
  * The FAB (Floating Action Button) is a button that floats above the content to promote a primary action.
@@ -9,7 +9,7 @@ import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 export default function FAB({ onPress }: FABProps ) {
   return (
     <TouchableOpacity style={styles.fab} onPress={onPress}>
-        <View><Ionicons name="add" size={24} color="white" /></View>
+        <View><Ionicons name="add" size={24} color="white"/></View>
     </TouchableOpacity>
   )
 }

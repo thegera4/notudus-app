@@ -14,6 +14,8 @@ export const Strings = {
       MAKE_MESSAGE: 'Do you want to make this note private?',
       REMOVE_PRIVATE_STATUS: 'Remove Private Status',
       REMOVE_MESSAGE: 'Do you want to remove the private status of this note?',
+      AUTH_ERROR: 'Authentication Error',
+      WRONG_AUTH: 'Something went wrong with the authentication. Please try again',
     },
 
 };

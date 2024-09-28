@@ -1,20 +1,22 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
-import { FlatList, StyleSheet, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import ListNoteItem from '@/components/ListNoteItem';
-import TopBar from '@/components/TopBar';
-import FAB from '@/components/FAB';
-import GridNoteItem from '@/components/GridNoteItem';
-import SearchOverlay from '@/components/SearchOverlay';
-import { getNotes } from '@/utils/db';
-import { ScreenEnum } from '@/constants/Enums';
-import { Note } from '@/types';
-import { notes as notesFromDB } from '@/fakenotes';
+import { useEffect, useState, useCallback, useMemo } from 'react'
+import { FlatList, StyleSheet, Alert } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import ListNoteItem from '@/components/ListNoteItem'
+import TopBar from '@/components/TopBar'
+import FAB from '@/components/FAB'
+import GridNoteItem from '@/components/GridNoteItem'
+import SearchOverlay from '@/components/SearchOverlay'
+import { getNotes } from '@/utils/db'
+import { ScreenEnum } from '@/constants/Enums'
+import { Note } from '@/types'
+import { notes as notesFromDB } from '@/fakenotes'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import * as LocalAuthentication from 'expo-local-authentication';
-import { router } from 'expo-router';
-import { useFocusEffect } from '@react-navigation/native';
-import { useAuth } from '@/contexts/authContext';
+import * as LocalAuthentication from 'expo-local-authentication'
+import { router } from 'expo-router'
+import { useFocusEffect } from '@react-navigation/native'
+import { useAuth } from '@/hooks/useAuth'
+import {addNoteRoute} from "@/constants/Routes"
+import Strings from '@/constants/Strings'
 
 /**The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.*/
 export default function NotesScreen() {
@@ -65,10 +67,10 @@ export default function NotesScreen() {
     if(auth){ setAuth(false); return }
     try{
       const result = await LocalAuthentication.authenticateAsync()
-      if (result.success){ setAuth(true) }
+      result.success && setAuth(true)
     } catch (e) {
       //TODO: cambiar por snackbar
-      Alert.alert('Authentication Error', 'Something went wrong with the authentication. Please try again', [{text: 'OK'}])
+      Alert.alert(Strings.MODALS.AUTH_ERROR, Strings.MODALS.WRONG_AUTH, [{text: 'OK'}])
     }
   }, [auth])
 
@@ -93,7 +95,7 @@ export default function NotesScreen() {
   }, [view])
 
   /** This function opens the Add Note screen when the FAB is pressed.*/
-  const handleAddNote = (): void => router.navigate('/addNote')
+  const handleAddNote = (): void => router.navigate(addNoteRoute)
 
   /** 
    * This function handles the press event of a note item (navigates to the Add Note screen with the note data to be edited).
@@ -108,7 +110,7 @@ export default function NotesScreen() {
       locked: note.locked,
       date: note.date,
     };
-    router.push({pathname: '/addNote', params: { note: JSON.stringify(noteData) }})
+    router.push({pathname: addNoteRoute, params: { note: JSON.stringify(noteData) }})
   }
 
   /** This function opens the search overlay when the search icon is pressed.*/

@@ -6,7 +6,8 @@ import { deleteNote } from '@/utils/db';
 import { router } from 'expo-router';
 
 /**This is the App Bar component, which shows different options and icons, depending on the screen (notes,todos or add note).*/
-export default function TopBar({screen, onLockPress, auth, onViewPress, view, onSearchPress, onBackPress, currentNote}: TopBarProps) {
+export default function TopBar({screen, onLockPress, auth, onViewPress, view, onSearchPress, onBackPress, 
+  currentNote, onShieldPress, newNoteLocked }: TopBarProps) {
 
   const styles = getStyles(screen);
 
@@ -22,6 +23,9 @@ export default function TopBar({screen, onLockPress, auth, onViewPress, view, on
       { screen !== ScreenEnum.AddNote ? 
         <View><Text style={styles.screenTitle}>{screen}</Text></View> :
         (onBackPress && <TopBarIcon onPress={onBackPress} iconName="arrow-back" size={24} color="white" />)
+      }
+      { screen === ScreenEnum.AddNote && currentNote === undefined &&
+        (onShieldPress && <TopBarIcon onPress={onShieldPress} iconName={newNoteLocked ? 'shield' : 'shield-outline'} size={24} color="white" />)
       }
       { screen === ScreenEnum.Notes &&
         <View style={styles.notesIcons}>

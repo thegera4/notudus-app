@@ -23,6 +23,8 @@ export type TopBarProps = {
     onSearchPress?: () => void,
     onBackPress?: () => void,
     currentNote?: Note,
+    onShieldPress?: () => void,
+    newNoteLocked?: boolean,
 }
 /**Props received by the TopBarIcon component.*/
 export type TopBarIconProps = {

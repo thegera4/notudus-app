@@ -1,17 +1,19 @@
-/**
- * String values used in the application
- */
+/**String values used in the application.*/
 export const Strings = {
-  // App Name
   APP_NAME: 'Notudus',
-    // Tab Names
     TABS: {
-        NOTES: 'Notes',
-        TODOS: 'ToDos',
-        },
-    // TopBar
+      NOTES: 'Notes',
+      TODOS: 'ToDos',
+    },
     TOPBAR: {
-        NOTES: 'Notes',
-        TODOS: 'ToDos',
-        },
+      NOTES: 'Notes',
+      TODOS: 'ToDos',
+    },
+    MODALS: {
+      MAKE_NOTE_PRIVATE: 'Make Note Private',
+      MAKE_MESSAGE: 'Do you want to make this note private?',
+      REMOVE_PRIVATE_STATUS: 'Remove Private Status',
+      REMOVE_MESSAGE: 'Do you want to remove the private status of this note?',
+    },
+
 };

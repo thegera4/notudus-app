@@ -4,7 +4,7 @@ import { ScreenEnum } from '@/constants/Enums'
 import { TopBarProps } from '@/types'
 import { deleteNote } from '@/utils/db'
 import { router } from 'expo-router'
-import {homeRoute} from "@/constants/Routes"
+import { homeRoute } from "@/constants/Routes"
 
 /**This is the App Bar component, which shows different options and icons, depending on the screen (notes,todos or add note).*/
 export default function TopBar({ screen, onLockPress, auth, onViewPress, view, onSearchPress, onBackPress,

@@ -10,7 +10,7 @@ import { notes } from '@/fakenotes'
 import { updateNote } from '@/utils/db'
 import PrivateText from '@/components/PrivateText'
 import { useAuth } from "@/hooks/useAuth"
-import {homeRoute} from "@/constants/Routes"
+import { homeRoute } from "@/constants/Routes"
 import * as LocalAuthentication from 'expo-local-authentication'
 import { Strings } from '@/constants/Strings'
 

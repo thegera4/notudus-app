@@ -9,23 +9,23 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 export default function FAB({ onPress }: FABProps ) {
   return (
     <TouchableOpacity style={styles.fab} onPress={onPress}>
-        <View><Ionicons name="add" size={24} color="white"/></View>
+      <View><Ionicons name="add" size={24} color="white"/></View>
     </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
-    fab: {
-      position: 'absolute',
-      margin: 16,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'green',
-      borderRadius: 28,
-      width: 56,
-      height: 56,
-      justifyContent: 'center',
-      alignItems: 'center',
-      elevation: 8,
-    },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'green',
+    borderRadius: 28,
+    width: 56,
+    height: 56,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 8,
+  },
 });

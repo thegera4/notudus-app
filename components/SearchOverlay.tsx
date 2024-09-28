@@ -3,7 +3,6 @@ import { View, TextInput, FlatList, StyleSheet, Modal, TouchableOpacity, Text, K
 import ListNoteItem from '@/components/ListNoteItem'
 import { Note, SearchOverlayProps } from '@/types'
 import { Colors } from '@/constants/Colors'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 /**
   * This is the Search Overlay component, which is opened by tapping the search icon in the TopBar.

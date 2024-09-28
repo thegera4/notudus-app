@@ -16,7 +16,7 @@ import { router } from 'expo-router'
 import { useFocusEffect } from '@react-navigation/native'
 import { useAuth } from '@/hooks/useAuth'
 import {addNoteRoute} from "@/constants/Routes"
-import Strings from '@/constants/Strings'
+import { Strings}  from '@/constants/Strings'
 
 /**The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.*/
 export default function NotesScreen() {
@@ -48,7 +48,7 @@ export default function NotesScreen() {
           setNotes(notes)
         } catch (e) {
           //TODO: cambiar por snackbar
-          console.error(`error while loading notes: ${e}`)
+          Alert.alert("Error", "An error occurred while loading the notes", [{text: 'OK'}])
         }
       }
       loadNotes()
@@ -90,7 +90,7 @@ export default function NotesScreen() {
       }
     } catch (e) {
       //TODO: cambiar por snackbar
-      console.error(`error while changing the note list view: ${e}`)
+      Alert.alert("Error", "An error occurred while changing the view", [{text: 'OK'}])
     }
   }, [view])
 
@@ -141,12 +141,14 @@ export default function NotesScreen() {
       />
       <FAB onPress={handleAddNote}/>
       <SearchOverlay 
-        visible={isSearchVisible} 
-        notes={notes} 
-        onClose={handleCloseSearch} 
+        visible={isSearchVisible}
+        notes={notes}
+        onClose={handleCloseSearch}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm} 
-      />
+        handleNotePressed={function (): void {
+          throw new Error('Function not implemented.')
+        } }      />
     </SafeAreaView>
   );
 }

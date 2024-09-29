@@ -16,7 +16,7 @@ const createTables = async () => {
     CREATE TABLE IF NOT EXISTS todos (
       id TEXT PRIMARY KEY NOT NULL UNIQUE,
       todo TEXT NOT NULL,
-      done INTEGER NOT NULL,
+      done INTEGER NOT NULL
     );
   `)
 }

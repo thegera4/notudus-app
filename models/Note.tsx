@@ -1,3 +1,4 @@
+//TODO: change the id to a unique identifier 
 class Note  {
     constructor(id: number, title: string, content: string, date: string, locked: number) {
         this.id = id;

@@ -58,3 +58,14 @@ export interface AuthContextType {
     auth: boolean;
     setAuth: React.Dispatch<React.SetStateAction<boolean>>
 }
+
+/**Type for the Custom Modal component props.*/
+export interface CustomModalProps {
+    title: string
+    message: string
+    confirmText: string
+    cancelText: string
+    onConfirm: () => void
+    onCancel: () => void
+    visible: boolean
+}

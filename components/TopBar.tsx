@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import TopBarIcon from './TopBarIcon'
 import { ScreenEnum } from '@/constants/Enums'
@@ -5,6 +6,7 @@ import { TopBarProps } from '@/types'
 import { deleteNote } from '@/utils/db'
 import { router } from 'expo-router'
 import { homeRoute } from "@/constants/Routes"
+import CustomModal from './CustomModal'
 
 /**This is the App Bar component, which shows different options and icons, depending on the screen (notes,todos or add note).*/
 export default function TopBar({ screen, onLockPress, auth, onViewPress, view, onSearchPress, onBackPress,
@@ -12,10 +14,15 @@ export default function TopBar({ screen, onLockPress, auth, onViewPress, view, o
 
   const styles = getStyles(screen)
 
-  /**This function deletes the current note when the user taps the trash icon on the top bar.*/
-  const onDeletePress = () => {
-    // TODO: open a modal to confirm the deletion
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
+
+  /**This function opens the modal to confirm the deletion of the current note.*/
+  const onDeletePress = (): void => setOpenDeleteModal(true)
+
+  /**This function deletes the current note and navigates back to the main notes screen.*/
+  const onConfirmDelete = (): void => {
     currentNote && deleteNote(currentNote.id)
+    setOpenDeleteModal(false)
     router.navigate(homeRoute)
   }
 
@@ -39,6 +46,17 @@ export default function TopBar({ screen, onLockPress, auth, onViewPress, view, o
         <View style={styles.notesIcons}>
           <TopBarIcon onPress={onDeletePress} iconName={'trash'} size={24} color="white" />
         </View>
+      }
+      { openDeleteModal && 
+        <CustomModal
+          title="Delete Note"
+          message="Are you sure you want to delete this note?"
+          confirmText="DELETE"
+          cancelText="CANCEL"
+          onConfirm={onConfirmDelete}
+          onCancel={() => setOpenDeleteModal(false)}
+          visible={openDeleteModal}
+        />
       }
     </View>
   )

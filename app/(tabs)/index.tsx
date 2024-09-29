@@ -126,7 +126,6 @@ export default function NotesScreen() {
   /** This function closes the search overlay.*/
   const handleCloseSearch = (): void => { setIsSearchVisible(false); setSearchTerm('') }
 
-  console.log("current note is locked?: ", notes.find(note => note.id === 1))
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <TopBar 

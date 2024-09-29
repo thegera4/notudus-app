@@ -1,6 +1,8 @@
 import { Note } from '@/types'
 import { notes } from '@/fakenotes'
 
+//TODO: implement sqlite database
+
 /**
  * This function returns all of the notes if the user is authenticated, otherwise it only returns the notes that are not locked.
  * @param {boolean} isAuth - A boolean that indicates if the user is authenticated.
@@ -15,9 +17,9 @@ export const getNotes = (isAuth: boolean, notes: Note[]): Note[] => isAuth ? not
  * @param {Note} note - A Note object that contains the updated information.
  * @returns {void} This function does not return anything.
 */
-export const updateNote = (noteId: number, note: Note): void => {
-    const noteIndex = notes.findIndex(note => note.id.toString() === noteId.toString())
-    notes[noteIndex] = { ...note, id: Number(note.id) }
+export const updateNote = (noteId: string, note: Note): void => {
+    const noteIndex = notes.findIndex(note => note.id === noteId)
+    notes[noteIndex] = { ...note }
 }
 
 /**
@@ -25,7 +27,7 @@ export const updateNote = (noteId: number, note: Note): void => {
  * @param {number} noteId - A string that represents the id of the note to be updated.
  * @returns {void} This function does not return anything.
 */
-export const deleteNote = (noteId: number): void => {
-    const noteIndex = notes.findIndex(note => note.id.toString() === noteId.toString())
+export const deleteNote = (noteId: string): void => {
+    const noteIndex = notes.findIndex(note => note.id === noteId)
     notes.splice(noteIndex, 1)
 }

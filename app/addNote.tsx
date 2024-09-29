@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { homeRoute } from "@/constants/Routes"
 import * as LocalAuthentication from 'expo-local-authentication'
 import { Strings } from '@/constants/Strings'
+import { v4 as uuidv4 } from 'uuid'
 
 /**
   * This is the Add Note screen where you can define and add a new note, as well as update an existing note.
@@ -50,7 +51,7 @@ export default function AddNoteScreen() {
   const onBack = async () => {
     if (title !== '' || content !== '') { 
       const preparedNote: Note = {
-        id: currentNote ? currentNote.id : notes.length + 1,
+        id: currentNote ? currentNote.id : uuidv4(),
         title,
         content,
         locked,

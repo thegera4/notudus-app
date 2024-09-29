@@ -5,6 +5,7 @@ import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import 'react-native-reanimated'
 import { AuthProvider } from '@/contexts/authContext'
+import 'react-native-get-random-values'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()

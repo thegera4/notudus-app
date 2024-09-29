@@ -6,8 +6,7 @@ import { ScreenEnum } from '@/constants/Enums'
 import { Colors } from '@/constants/Colors'
 import { router, useLocalSearchParams } from 'expo-router'
 import Note from '@/models/Note'
-import { notes } from '@/fakenotes'
-import { updateNote } from '@/utils/db'
+import { insertNote, updateNote } from '@/utils/db'
 import PrivateText from '@/components/PrivateText'
 import { useAuth } from "@/hooks/useAuth"
 import { homeRoute } from "@/constants/Routes"
@@ -20,9 +19,7 @@ import { v4 as uuidv4 } from 'uuid'
   * The lock icon allows you to make a note private and the back icon saves the changes.
 */
 export default function AddNoteScreen() {
-
-  //TODO: Add code for no notes case (icon with animation).
-
+  
   const localParams: { note?: string } = useLocalSearchParams()
 
   const [title, setTitle] = useState<string>('')
@@ -61,13 +58,13 @@ export default function AddNoteScreen() {
         preparedNote.locked = 1
         try{
           const result = await LocalAuthentication.authenticateAsync()
-          result.success && currentNote ? updateNote(currentNote.id, preparedNote) : notes.push(preparedNote)
+          result.success && currentNote ? updateNote(currentNote.id, preparedNote) : insertNote(preparedNote)
         } catch (e) {
           //TODO: change for snackbar
           Alert.alert(Strings.MODALS.AUTH_ERROR, Strings.MODALS.WRONG_AUTH, [{text: 'OK'}])
         }
       } else {
-        currentNote ? updateNote(currentNote.id, preparedNote) : notes.push(preparedNote)
+        currentNote ? updateNote(currentNote.id, preparedNote) : insertNote(preparedNote)
       }
     }
     router.navigate(homeRoute)

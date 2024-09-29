@@ -26,6 +26,7 @@
     "expo-router": "~3.5.23",
     "expo-splash-screen": "~0.27.6",
     "expo-status-bar": "~1.12.1",
+    "expo-sqlite": "~14.0.6",
     "expo-system-ui": "~3.0.7",
     "expo-web-browser": "~13.0.3",
     "lottie-react-native": "6.7.0",

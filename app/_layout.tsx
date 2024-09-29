@@ -6,14 +6,18 @@ import * as SplashScreen from 'expo-splash-screen'
 import 'react-native-reanimated'
 import { AuthProvider } from '@/contexts/authContext'
 import 'react-native-get-random-values'
+import { initDB } from '@/utils/db'
+import SpaceMonodRegular from '../assets/fonts/SpaceMono-Regular.ttf'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
-  const [loaded] = useFonts({SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'), })
+  const [loaded] = useFonts({ SpaceMono: SpaceMonodRegular })
 
-  useEffect(() => { loaded && SplashScreen.hideAsync(); }, [loaded])
+  useEffect(() => { initDB() }, [])
+
+  useEffect(() => { loaded && SplashScreen.hideAsync() }, [loaded])
 
   if (!loaded) { return null }
 

@@ -9,7 +9,6 @@ import SearchOverlay from '@/components/SearchOverlay'
 import { getNotes } from '@/utils/db'
 import { ScreenEnum } from '@/constants/Enums'
 import { Note } from '@/types'
-import { notes as notesFromDB } from '@/fakenotes'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as LocalAuthentication from 'expo-local-authentication'
 import { router } from 'expo-router'
@@ -23,7 +22,7 @@ import * as emptyAnimation from '@/assets/animations/empty.json'
 /**The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.*/
 export default function NotesScreen() {
 
-  const [notes, setNotes] = useState<Note[]>(notesFromDB)
+  const [notes, setNotes] = useState<Note[]>([])
   const [view, setView] = useState<string>('list')
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false)
   const [searchTerm, setSearchTerm] = useState<string>('')
@@ -32,7 +31,7 @@ export default function NotesScreen() {
 
   const animation = useRef<LottieView>(null);
 
-  const filteredNotes = useMemo(() => getNotes(auth, notesFromDB), [auth, notesFromDB])
+  const filteredNotes = useMemo(() => getNotes(auth), [auth])
 
   // control the animation
   useEffect(() => { animation.current?.play() }, [])
@@ -51,7 +50,7 @@ export default function NotesScreen() {
     useCallback(() => { 
       const loadNotes = async () => {
         try{
-          const notes = getNotes(auth, notesFromDB)
+          const notes = await getNotes(auth) as Note[]
           setNotes(notes)
         } catch (e) {
           //TODO: cambiar por snackbar
@@ -63,7 +62,13 @@ export default function NotesScreen() {
   )
 
   // sets the "notes" state (when the user is authenticated) to hide/show the private notes.
-  useEffect(() => { setNotes(filteredNotes) }, [filteredNotes]) 
+  useEffect(() => { 
+    const fetchFilteredNotes = async () => {
+      const notes = await filteredNotes
+      setNotes(notes)
+    }
+    fetchFilteredNotes()
+  }, [filteredNotes]) 
 
   /**
    * This function handles the authentication of the user when the lock icon is pressed. It uses the LocalAuthentication API to 
@@ -136,7 +141,7 @@ export default function NotesScreen() {
         view={view} 
         onSearchPress={handleSearchPress}
       />
-      { notes.length === 0 ?
+      { notes.length === 0 || notes === undefined ?
         <View style={styles.animationContainer}>
           <LottieView ref={animation} source={emptyAnimation} autoPlay loop={false} style={styles.animation}/>
           <Text style={styles.emptyText}>No notes! Add a new note with the + button.</Text>
@@ -160,9 +165,7 @@ export default function NotesScreen() {
         onClose={handleCloseSearch}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm} 
-        handleNotePressed={function (): void {
-          throw new Error('Function not implemented.')
-        } }      />
+        handleNotePressed={function (): void { throw new Error('Function not implemented.')} }/>
     </SafeAreaView>
   );
 }

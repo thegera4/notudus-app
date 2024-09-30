@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { View, TextInput, FlatList, StyleSheet, Modal, TouchableOpacity, Text, KeyboardAvoidingView } from 'react-native'
-import ListNoteItem from '@/components/ListNoteItem'
+import ListNoteItem from '@/components/notes/ListNoteItem'
 import { NoteModelType, SearchOverlayProps } from '@/types'
 import { Colors } from '@/constants/Colors'
 import { Strings } from '@/constants/Strings'

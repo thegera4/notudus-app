@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { TextInput, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopBar from '@/components/TopBar'
+import TopBar from '@/components/shared/TopBar'
 import { ScreenEnum } from '@/constants/Enums'
 import { Colors } from '@/constants/Colors'
 import { router, useLocalSearchParams } from 'expo-router'
 import NoteModelType from '@/models/Note'
-import PrivateText from '@/components/PrivateText'
+import PrivateText from '@/components/notes/PrivateText'
 import { useAuth } from "@/hooks/useAuth"
 import { homeRoute } from "@/constants/Routes"
 import * as LocalAuthentication from 'expo-local-authentication'

@@ -33,11 +33,15 @@ export default function NotesScreen() {
 
   const filteredNotes = useMemo(() => Note.getNotes(auth), [auth])
 
-  // control the animation
-  useEffect(() => { animation.current?.play() }, [])
+  /** This function opens the search overlay when the search icon is pressed.*/
+  const handleSearchPress = (): void => setIsSearchVisible(true)
+
+  /** This function closes the search overlay.*/
+  const handleCloseSearch = (): void => { setIsSearchVisible(false); setSearchTerm('') }
 
   // get the view from shared preferences if it exists
   useEffect(() => {
+    animation.current?.play() // control the animation
     const getView = async () => {
       const value = await AsyncStorage.getItem(Strings.NOTES.VIEW)
       value !== null && setView(value)
@@ -48,6 +52,7 @@ export default function NotesScreen() {
   // update the notes when a new note is added/updated (onBack from AddNoteScreen)
   useFocusEffect(
     useCallback(() => { 
+      handleCloseSearch()
       const loadNotes = async () => {
         try{
           const notes = await Note.getNotes(auth) as NoteModelType[]
@@ -118,15 +123,9 @@ export default function NotesScreen() {
       content: note.content,
       locked: note.locked,
       date: note.date,
-    };
+    }
     router.push({pathname: addNoteRoute, params: { note: JSON.stringify(noteData) }})
   }
-
-  /** This function opens the search overlay when the search icon is pressed.*/
-  const handleSearchPress = (): void => setIsSearchVisible(true)
-
-  /** This function closes the search overlay.*/
-  const handleCloseSearch = (): void => { setIsSearchVisible(false); setSearchTerm('') }
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -162,9 +161,10 @@ export default function NotesScreen() {
         onClose={handleCloseSearch}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm} 
-        handleNotePressed={handleNotePressed}/>
+        handleNotePressed={handleNotePressed}
+      />
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({

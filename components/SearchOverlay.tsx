@@ -9,8 +9,7 @@ import { Strings } from '@/constants/Strings'
   * It allows the user to search for notes by title or content, and displays the results in a list.
 */
 export default function SearchOverlay({ visible, notes, onClose, searchTerm, setSearchTerm, handleNotePressed }: SearchOverlayProps) {
-  
-  //TODO: fix bug when using the search icon and going back to the notes screen
+
   const [filteredNotes, setFilteredNotes] = useState<NoteModelType[]>([])
 
   // Filter notes based on the search term
@@ -51,7 +50,7 @@ export default function SearchOverlay({ visible, notes, onClose, searchTerm, set
         </View>
       </KeyboardAvoidingView>
     </Modal>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -93,4 +92,4 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: 'green',
   },
-});
+})

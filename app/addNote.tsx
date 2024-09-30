@@ -46,7 +46,9 @@ export default function AddNoteScreen() {
 
   /**This function handles the back event to save the new notes, or the updated information of an existing note.*/
   const onBack = async (): Promise<void> => {
-    if (title !== '' || content !== '') { 
+    if( (currentNote && title === currentNote.title && content === currentNote.content) || (title === '' && content === '') ){
+      router.dismissAll()
+    } else{
       const preparedNote: NoteModelType = {
         id: currentNote ? currentNote.id : uuidv4(),
         title,
@@ -65,8 +67,8 @@ export default function AddNoteScreen() {
       } else {
         currentNote ? Note.updateNote(currentNote.id, preparedNote) : Note.insertNote(preparedNote)
       }
+      router.navigate(homeRoute)
     }
-    router.navigate(homeRoute)
   }
 
   /**This function handles the shield icon press event (show the private text to save the note as private).*/
@@ -108,7 +110,7 @@ export default function AddNoteScreen() {
       </ScrollView>
     </SafeAreaView>
     </KeyboardAvoidingView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -126,4 +128,4 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     color: 'white',
   },
-});
+})

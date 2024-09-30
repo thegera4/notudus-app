@@ -8,10 +8,12 @@ import { Colors } from '@/constants/Colors'
   * This is the Search Overlay component, which is opened by tapping the search icon in the TopBar.
   * It allows the user to search for notes by title or content, and displays the results in a list.
 */
-export default function SearchOverlay({ visible, notes, onClose, searchTerm, setSearchTerm }: SearchOverlayProps) {
+export default function SearchOverlay({ visible, notes, onClose, searchTerm, setSearchTerm, handleNotePressed }: SearchOverlayProps) {
   
+  //TODO: fix bug when using the search icon and going back to the notes screen
   const [filteredNotes, setFilteredNotes] = useState<Note[]>([])
 
+  // Filter notes based on the search term
   useEffect(() => {
     if (searchTerm) {
       const filtered = notes.filter(note =>note.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -37,14 +39,14 @@ export default function SearchOverlay({ visible, notes, onClose, searchTerm, set
               autoFocus={true}
             />
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Close</Text>
+              <Text style={styles.closeButtonText}>CLOSE</Text>
             </TouchableOpacity>
           </View>
           <FlatList
             style={styles.list}
             data={filteredNotes}
-            renderItem={({ item }) => <ListNoteItem note={item} onPress={() => {}} />}
-            keyExtractor={item => item.id.toString()}
+            renderItem={({ item }) => <ListNoteItem note={item} onPress={handleNotePressed}/>}
+            keyExtractor={item => item.id}
           />
         </View>
       </KeyboardAvoidingView>

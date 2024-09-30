@@ -165,7 +165,7 @@ export default function NotesScreen() {
         onClose={handleCloseSearch}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm} 
-        handleNotePressed={function (): void { throw new Error('Function not implemented.')} }/>
+        handleNotePressed={handleNotePressed}/>
     </SafeAreaView>
   );
 }

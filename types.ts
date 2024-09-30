@@ -50,7 +50,7 @@ export type SearchOverlayProps = {
     onClose: () => void
     searchTerm: string
     setSearchTerm: (term: string) => void
-    handleNotePressed: () => void
+    handleNotePressed: (note: Note) => void
 }
 
 /**Type for the AuthContext.*/

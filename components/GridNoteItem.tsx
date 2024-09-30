@@ -1,10 +1,10 @@
 import { NoteItemProps } from '@/types'
-import { limitContent } from '@/utils/utils'
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 
 /** Card that shows the title, description and last modified date of a note in the Notes Screen.*/
 export default function GridNoteItem ({note, onPress}: NoteItemProps) {
 
+  /** This function handles the press event of the card and calls the onPress function with the note as parameter.*/
   const handlePress = () => onPress(note)
 
   return (
@@ -12,8 +12,8 @@ export default function GridNoteItem ({note, onPress}: NoteItemProps) {
       <Pressable style={({pressed}) => pressed ? [styles.pressed, styles.button] : styles.button} onPress={handlePress}>
         <View style={styles.innerConatiner}>
           {note.locked === 1 && <Text style={styles.locked}>Private</Text>}
-          <Text style={styles.title}>{note.title}</Text>
-          <Text style={styles.content}>{limitContent(note.content, 30)}</Text>
+          <Text style={styles.title} numberOfLines={1}>{note.title}</Text>
+          <Text style={styles.content} numberOfLines={2}>{note.content}</Text>
           <Text style={styles.date}>{note.date}</Text>
         </View>
       </Pressable>
@@ -22,9 +22,7 @@ export default function GridNoteItem ({note, onPress}: NoteItemProps) {
 }
 
 const styles = StyleSheet.create({
-  pressed: {
-    opacity: 0.5
-  },
+  pressed: { opacity: 0.5 },
   gridItem: {
     flex: 1,
     margin: 10,
@@ -37,9 +35,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
   },
-  button: {
-    flex: 1,
-  },
+  button: { flex: 1 },
   innerConatiner: {
     flex: 1,
     padding: 16,
@@ -47,15 +43,19 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   title: {
+    width: '100%',
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold'
   },
   content: {
+    width: '100%',
     color: 'white',
-    opacity: 0.9
+    opacity: 0.9,
+    paddingVertical: 2
   },
   date: {
+    width: '100%',
     color: 'white',
     opacity: 0.5
   },

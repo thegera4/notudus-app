@@ -1,5 +1,4 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native'
-import { limitContent } from '@/utils/utils'
 import { NoteItemProps } from '@/types';
 import PrivateText from './PrivateText';
 
@@ -13,8 +12,8 @@ export default function ListNoteItem({note, onPress}: NoteItemProps) {
       <View style={styles.card}>
         <View style={styles.textContainer}>
           {note.locked === 1 && <PrivateText />}
-          <Text style={styles.noteTitle}>{note.title}</Text>
-          <Text style={styles.noteDescription} numberOfLines={2}>{limitContent(note.content, 40)}</Text>
+          <Text style={styles.noteTitle} numberOfLines={1} ellipsizeMode="tail">{note.title}</Text>
+          <Text style={styles.noteDescription} numberOfLines={2}>{note.content}</Text>
           <Text style={styles.noteDate}>Last modified: {note.date}</Text>
         </View>
       </View>
@@ -26,7 +25,7 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.5 },
   textContainer: { flex: 1 },
   noteDate: { color: 'white', opacity: 0.5 },
-  noteDescription: { color: 'white', opacity: 0.9 },
+  noteDescription: { color: 'white', opacity: 0.9, marginVertical: 4 },
   noteTitle: { color: 'white', fontSize: 20, fontWeight: 'bold' },
   card: {
     backgroundColor: '#212121',
@@ -38,6 +37,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    maxHeight: 100
+    maxHeight: 120
   },
 });

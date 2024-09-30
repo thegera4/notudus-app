@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react'
 import { View, TextInput, FlatList, StyleSheet, Modal, TouchableOpacity, Text, KeyboardAvoidingView } from 'react-native'
 import ListNoteItem from '@/components/ListNoteItem'
-import { Note, SearchOverlayProps } from '@/types'
+import { NoteModelType, SearchOverlayProps } from '@/types'
 import { Colors } from '@/constants/Colors'
+import { Strings } from '@/constants/Strings'
 
-/**
-  * This is the Search Overlay component, which is opened by tapping the search icon in the TopBar.
+/** This is the Search Overlay component, which is opened by tapping the search icon in the TopBar.
   * It allows the user to search for notes by title or content, and displays the results in a list.
 */
 export default function SearchOverlay({ visible, notes, onClose, searchTerm, setSearchTerm, handleNotePressed }: SearchOverlayProps) {
   
   //TODO: fix bug when using the search icon and going back to the notes screen
-  const [filteredNotes, setFilteredNotes] = useState<Note[]>([])
+  const [filteredNotes, setFilteredNotes] = useState<NoteModelType[]>([])
 
   // Filter notes based on the search term
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function SearchOverlay({ visible, notes, onClose, searchTerm, set
           <View style={styles.searchBar}>
             <TextInput
               style={styles.input}
-              placeholder="Search notes..."
+              placeholder={Strings.MODALS.SEARCH_NOTES}
               placeholderTextColor={Colors.inputs.textPlaceholder}
               value={searchTerm}
               onChangeText={setSearchTerm}

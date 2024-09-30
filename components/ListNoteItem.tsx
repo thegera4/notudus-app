@@ -5,7 +5,8 @@ import PrivateText from './PrivateText';
 /** Card that shows the title, description and last modified date of a note in the Notes Screen.*/
 export default function ListNoteItem({note, onPress}: NoteItemProps) {
 
-  const handlePress = () => onPress(note);
+  /** This function handles the press event of the card and calls the onPress function with the note as parameter.*/
+  const handlePress = (): void => onPress(note);
 
   return (
     <Pressable style={({pressed}) => pressed && styles.pressed} onPress={handlePress}>

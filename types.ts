@@ -2,7 +2,7 @@ import React from "react"
 import { Ionicons } from "@expo/vector-icons"
 
 /**Note model type.*/
-export interface Note {
+export interface NoteModelType {
     id: string;
     title: string;
     content: string;
@@ -12,8 +12,8 @@ export interface Note {
 
 /**Props received by the NoteItem component.*/
 export type NoteItemProps = {
-    note: Note,
-    onPress: (note: Note) => void,
+    note: NoteModelType,
+    onPress: (note: NoteModelType) => void,
 }
 
 /**Props received by the TopBar component.*/
@@ -25,7 +25,7 @@ export type TopBarProps = {
     view: string,
     onSearchPress?: () => void,
     onBackPress?: () => void,
-    currentNote?: Note,
+    currentNote?: NoteModelType,
     onShieldPress?: () => void,
     newNoteLocked?: boolean,
 }
@@ -46,11 +46,11 @@ export type FABProps = {
 /**Type for the SearchOverlay component props.*/
 export type SearchOverlayProps = {
     visible: boolean
-    notes: Note[]
+    notes: NoteModelType[]
     onClose: () => void
     searchTerm: string
     setSearchTerm: (term: string) => void
-    handleNotePressed: (note: Note) => void
+    handleNotePressed: (note: NoteModelType) => void
 }
 
 /**Type for the AuthContext.*/

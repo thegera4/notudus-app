@@ -69,3 +69,8 @@ export interface CustomModalProps {
     onCancel: () => void
     visible: boolean
 }
+
+/**Type for the BottomSheet component props.*/
+export type BottomSheetProps = {
+    setVisible: () => void
+}

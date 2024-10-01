@@ -3,10 +3,14 @@ import { Colors } from '@/constants/Colors'
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Animated, Pressable, 
   KeyboardAvoidingView, Platform, Dimensions } from 'react-native'
 import { BottomSheetProps } from '@/types'
+import Todo from '@/models/Todo'
+import { v4 as uuidv4 } from 'uuid'
+import { Strings } from '@/constants/Strings'
 
 /** This component is a BottomSheet used to add todos.*/
 export default function BottomSheet({ setVisible }: BottomSheetProps) {
 
+  const [content, setContent] = useState<string>('')
   const [bottomSheetHeight] = useState(Dimensions.get('window').height * 0.5)
 
   const slideUpRef = useRef<Animated.Value>(new Animated.Value(300)).current
@@ -29,6 +33,23 @@ export default function BottomSheet({ setVisible }: BottomSheetProps) {
   /** This function closes the BottomSheet by triggering the slideDown animation.*/
   const closeBottomSheet = (): void => { slideDown(); setTimeout(() => setVisible(), 200) }
 
+  /** This function saves a todo in the database.*/
+  const saveTodo = async (): Promise<void> => {
+    try{
+      const newTodo: Todo = {
+        id: uuidv4(),
+        todo: content,
+        done: 0,
+      }
+      await Todo.insertTodo(newTodo)
+    } catch (e) {
+      console.error(Strings.ERRORS.INSERT, e)
+    } finally {
+      setContent('')
+      closeBottomSheet()
+    }
+  }
+
   return (
     <Pressable style={styles.backdrop} onPress={closeBottomSheet}>
       <Pressable style={styles.voidPressable}>
@@ -39,7 +60,7 @@ export default function BottomSheet({ setVisible }: BottomSheetProps) {
                 <Text style={[styles.title, styles.cancel]}>Cancel</Text>
               </TouchableOpacity>
               <Text style={styles.title}>Add Todo</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={saveTodo}>
                 <Text style={[styles.title, styles.save]}>Save</Text>
               </TouchableOpacity>
             </View>
@@ -48,6 +69,9 @@ export default function BottomSheet({ setVisible }: BottomSheetProps) {
               style={styles.input}
               placeholderTextColor={Colors.inputs.textPlaceholder}
               selectionColor={Colors.inputs.selection}
+              value={content}
+              onChangeText={setContent}
+              autoFocus={true}
             />
           </KeyboardAvoidingView>
         </Animated.View>

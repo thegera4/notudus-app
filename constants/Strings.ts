@@ -34,10 +34,10 @@ export const Strings = {
       LOADING: 'An error occurred while loading the notes: ',
       AUTH_ERROR: 'Authentication Error: ',
       CHANGE_VIEW: 'Error while changing the view: ',
-      GET_NOTES: 'Error while getting the notes: ',
-      INSERT_NOTE: 'Error while inserting the note: ',
-      UPDATE_NOTE: 'Error while updating the note: ',
-      DELETE_NOTE: 'Error while deleting the note: ',
+      GET: 'Error while getting the data: ',
+      INSERT: 'Error while inserting data: ',
+      UPDATE: 'Error while updating data: ',
+      DELETE: 'Error while deleting data: ',
     },
 
 };

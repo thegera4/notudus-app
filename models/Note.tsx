@@ -37,7 +37,7 @@ export default class Note  {
       const result: NoteModelType[] = (await db).getAllAsync(query) as unknown as NoteModelType[]
       return result
     } catch (e) {
-      console.error(Strings.ERRORS.GET_NOTES, e)
+      console.error(Strings.ERRORS.GET, e)
       return []
     }
   }
@@ -51,7 +51,7 @@ export default class Note  {
     try{
       (await db).runAsync(query, [note.id, note.title, note.content, note.locked, note.date])
     } catch (e) {
-      console.error(Strings.ERRORS.INSERT_NOTE, e)
+      console.error(Strings.ERRORS.INSERT, e)
     }
   }
 
@@ -65,7 +65,7 @@ export default class Note  {
     try{
       (await db).runAsync(query, [note.title, note.content, note.locked, note.date, noteId])
     } catch (e) {
-      console.error(Strings.ERRORS.UPDATE_NOTE, e)
+      console.error(Strings.ERRORS.UPDATE, e)
     }
   }
 
@@ -78,7 +78,7 @@ export default class Note  {
     try{
       (await db).runAsync(query, [noteId])
     } catch (e) {
-      console.error(Strings.ERRORS.DELETE_NOTE, e)
+      console.error(Strings.ERRORS.DELETE, e)
     }
   }
 

@@ -8,6 +8,7 @@ import { AuthProvider } from '@/contexts/authContext'
 import 'react-native-get-random-values'
 import { initDB } from '@/utils/db'
 import SpaceMonodRegular from '../assets/fonts/SpaceMono-Regular.ttf'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
@@ -22,14 +23,16 @@ export default function RootLayout() {
   if (!loaded) { return null }
 
   return (
-    <AuthProvider>
-      <ThemeProvider value={DarkTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-          <Stack.Screen name="addNote" options={{ headerShown: false }}/>
-        </Stack>
-      </ThemeProvider>
-    </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <ThemeProvider value={DarkTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+            <Stack.Screen name="addNote" options={{ headerShown: false }}/>
+          </Stack>
+        </ThemeProvider>
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 }

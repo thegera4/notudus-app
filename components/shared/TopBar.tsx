@@ -11,7 +11,7 @@ import Note from '@/models/Note'
 
 /**This is the App Bar component, which shows different options and icons, depending on the screen (notes,todos or add note).*/
 export default function TopBar({ screen, onLockPress, auth, onViewPress, view, onSearchPress, onBackPress,
-  currentNote, onShieldPress, newNoteLocked }: TopBarProps) {
+  currentNote, onShieldPress, newNoteLocked, numberOfTasks }: TopBarProps) {
 
   const styles = getStyles(screen)
 
@@ -46,6 +46,7 @@ export default function TopBar({ screen, onLockPress, auth, onViewPress, view, o
       { screen === ScreenEnum.AddNote && currentNote &&
         <View style={styles.notesIcons}><TopBarIcon onPress={onDeletePress} iconName='trash' size={24} color="white"/></View>
       }
+      { screen === ScreenEnum.Todos && <Text style={styles.tasks}>{numberOfTasks} Tasks</Text>}
       { openDeleteModal && 
         <CustomModal
           title={Strings.MODALS.DELETE_NOTE}
@@ -63,6 +64,7 @@ export default function TopBar({ screen, onLockPress, auth, onViewPress, view, o
 
 const getStyles = (screen: string) => StyleSheet.create({
   todosIcon: { paddingRight: 16 },
+  tasks: { color: 'white', fontSize: 16, paddingRight: 20 },
   mainTopBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   screenTitle: {
     color: 'white',

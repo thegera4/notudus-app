@@ -1,5 +1,6 @@
 import React from "react"
 import { Ionicons } from "@expo/vector-icons"
+import Todo from "@/models/Todo"
 
 /**Note model type.*/
 export interface NoteModelType {
@@ -28,6 +29,7 @@ export type TopBarProps = {
     currentNote?: NoteModelType,
     onShieldPress?: () => void,
     newNoteLocked?: boolean,
+    numberOfTasks?: number
 }
 
 /**Props received by the TopBarIcon component.*/
@@ -72,5 +74,13 @@ export interface CustomModalProps {
 
 /**Type for the BottomSheet component props.*/
 export type BottomSheetProps = {
-    setVisible: () => void
+    setVisible: () => void,
+    todos: Todo[],
+    setTodos: (todos: Todo[]) => void
+}
+
+/**Type for the TodoItem component props.*/
+export type TodoItemProps = {
+    todo: Todo,
+    onDelete: (id: string) => void
 }

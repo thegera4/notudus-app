@@ -47,6 +47,19 @@ export default class Todo {
       return []
     }
   }
+
+  /** This function deletes a todo from the database.
+  * @param {string} id - The unique identifier of the todo to be deleted.
+  * @returns {Promise<void>} A promise that resolves to void.
+  */
+  static deleteTodo = async (id: string): Promise<void> => {
+    const query = 'DELETE FROM todos WHERE id = ?'
+    try {
+      (await db).runAsync(query, [id])
+    } catch (e) {
+      console.error(Strings.ERRORS.DELETE, e)
+    }
+  }
   
   /*
   static updateTodo = async (id: string, todo: Todo): Promise<void> => {
@@ -54,22 +67,6 @@ export default class Todo {
         
     } catch (e) {
       console.error('Error updating note: ', e)
-    }
-  }
-  
-  static deleteTodo = async (id: string): Promise<void> => {
-    try {
-       
-    } catch (e) {
-      console.error('Error deleting note: ', e)
-    }
-  }
-  
-  static deleteAllNotes = async (): Promise<void> => {
-    try {
-       
-    } catch (e) {
-      console.error('Error deleting all notes: ', e)
     }
   }
   */

@@ -8,14 +8,14 @@ import { v4 as uuidv4 } from 'uuid'
 import { Strings } from '@/constants/Strings'
 
 /** This component is a BottomSheet used to add todos.*/
-export default function BottomSheet({ setVisible }: BottomSheetProps) {
+export default function BottomSheet({ setVisible, setTodos, todos }: BottomSheetProps) {
 
   const [content, setContent] = useState<string>('')
   const [bottomSheetHeight] = useState(Dimensions.get('window').height * 0.5)
 
   const slideUpRef = useRef<Animated.Value>(new Animated.Value(300)).current
 
-  const styles = getStyles(slideUpRef, bottomSheetHeight)
+  const styles = getStyles(slideUpRef, bottomSheetHeight, content)
 
   /** This function is the animation definition to slide the BottomSheet up.*/
   const slideUp = (): void => {
@@ -35,6 +35,7 @@ export default function BottomSheet({ setVisible }: BottomSheetProps) {
 
   /** This function saves a todo in the database.*/
   const saveTodo = async (): Promise<void> => {
+    if (!content.trim()) return
     try{
       const newTodo: Todo = {
         id: uuidv4(),
@@ -42,6 +43,7 @@ export default function BottomSheet({ setVisible }: BottomSheetProps) {
         done: 0,
       }
       await Todo.insertTodo(newTodo)
+      setTodos([...todos, newTodo])
     } catch (e) {
       console.error(Strings.ERRORS.INSERT, e)
     } finally {
@@ -60,7 +62,7 @@ export default function BottomSheet({ setVisible }: BottomSheetProps) {
                 <Text style={[styles.title, styles.cancel]}>Cancel</Text>
               </TouchableOpacity>
               <Text style={styles.title}>Add Todo</Text>
-              <TouchableOpacity onPress={saveTodo}>
+              <TouchableOpacity onPress={saveTodo} disabled={!content}>
                 <Text style={[styles.title, styles.save]}>Save</Text>
               </TouchableOpacity>
             </View>
@@ -80,8 +82,8 @@ export default function BottomSheet({ setVisible }: BottomSheetProps) {
   )
 }
 
-const getStyles = (slideUpRef: Animated.Value, bottomSheetHeight: number) => StyleSheet.create({
-  save:{ color: 'green' },
+const getStyles = (slideUpRef: Animated.Value, bottomSheetHeight: number, content: string) => StyleSheet.create({
+  save:{ color: content.trim() ? 'green' : 'gray' },
   cancel: { color: 'red' },
   keyboard: { flex: 1 },
   animation: { transform: [ { translateY: slideUpRef } ] },

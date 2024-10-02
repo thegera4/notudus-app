@@ -84,3 +84,8 @@ export type TodoItemProps = {
     todo: Todo,
     onDelete: (id: string) => void
 }
+
+/**Type for the NoDataAnimation component props.*/
+export type NoDataAnimationProps = {
+    screen: string
+  }

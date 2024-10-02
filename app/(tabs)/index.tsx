@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
-import { FlatList, StyleSheet, View, Text } from 'react-native'
+import { useEffect, useState, useCallback, useMemo } from 'react'
+import { FlatList, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ListNoteItem from '@/components/notes/ListNoteItem'
 import TopBar from '@/components/shared/TopBar'
@@ -15,9 +15,8 @@ import { useFocusEffect } from '@react-navigation/native'
 import { useAuth } from '@/hooks/useAuth'
 import {addNoteRoute} from "@/constants/Routes"
 import { Strings}  from '@/constants/Strings'
-import LottieView from 'lottie-react-native';
-import * as emptyAnimation from '@/assets/animations/empty.json'
 import Note from '@/models/Note'
+import NoDataAnimation from '@/components/shared/NoDataAnimation'
 
 /**The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.*/
 export default function NotesScreen() {
@@ -29,8 +28,6 @@ export default function NotesScreen() {
 
   const { auth, setAuth } = useAuth()
 
-  const animation = useRef<LottieView>(null);
-
   const filteredNotes = useMemo(() => Note.getNotes(auth), [auth])
 
   /** This function opens the search overlay when the search icon is pressed.*/
@@ -41,7 +38,6 @@ export default function NotesScreen() {
 
   // get the view from shared preferences if it exists
   useEffect(() => {
-    animation.current?.play() // control the animation
     const getView = async () => {
       const value = await AsyncStorage.getItem(Strings.NOTES.VIEW)
       value !== null && setView(value)
@@ -137,12 +133,7 @@ export default function NotesScreen() {
         view={view} 
         onSearchPress={handleSearchPress}
       />
-      { notes.length === 0 || notes === undefined ?
-        <View style={styles.animationContainer}>
-          <LottieView ref={animation} source={emptyAnimation} autoPlay loop={false} style={styles.animation}/>
-          <Text style={styles.emptyText}>No notes! Add a new note with the + button.</Text>
-        </View>
-        :
+      { notes.length === 0 || notes === undefined ? <NoDataAnimation screen={ScreenEnum.Notes}/> :
         <FlatList
           data={notes}
           renderItem={({item}) => view === Strings.NOTES.LIST ? 
@@ -169,7 +160,4 @@ export default function NotesScreen() {
 
 const styles = StyleSheet.create({
   safeAreaView: { flex: 1 },
-  animationContainer: { flex: 1, alignItems: 'center', marginTop: 80 },
-  animation: { width: 200, height: 200, alignSelf: 'center' },
-  emptyText: { color: 'white', fontSize: 16, textAlign: 'center' },
 })

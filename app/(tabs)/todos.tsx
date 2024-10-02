@@ -8,6 +8,7 @@ import { StyleSheet, FlatList } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Todo from '@/models/Todo'
 import TodoItem from '@/components/todos/TodoItem'
+import NoDataAnimation from '@/components/shared/NoDataAnimation'
 
 export default function TodoScreen() {
 
@@ -20,6 +21,7 @@ export default function TodoScreen() {
     setTodos(todos)
   }
 
+  // Fetch todos from database on first render
   useEffect(() => { fetchTodos() }, [])
 
   /** This function deletes a todo from the database.
@@ -39,14 +41,16 @@ export default function TodoScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <TopBar screen={ScreenEnum.Todos} auth={false} view={Strings.TOPBAR.TODOS} numberOfTasks={todos.length}/>
-      <FlatList 
-        data={todos} 
-        keyExtractor={item => item.id} 
-        renderItem={({ item }: { item: Todo }) => <TodoItem todo={item} onDelete={deleteTodo} />} 
-        initialNumToRender={10}
-        windowSize={10}
-        getItemLayout={getItemLayout}
-      />
+      { todos.length === 0 || todos === undefined ? <NoDataAnimation screen={ScreenEnum.Todos}/> :
+        <FlatList 
+          data={todos} 
+          keyExtractor={item => item.id} 
+          renderItem={({ item }: { item: Todo }) => <TodoItem todo={item} onDelete={deleteTodo} />} 
+          initialNumToRender={10}
+          windowSize={10}
+          getItemLayout={getItemLayout}
+        />
+      }
       <FAB onPress={() => setBottomSheetVisible(true)}/>
       { bottomSheetVisible && 
         <BottomSheet 

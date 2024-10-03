@@ -61,13 +61,18 @@ export default class Todo {
     }
   }
   
-  /*
-  static updateTodo = async (id: string, todo: Todo): Promise<void> => {
+  /** This function updates a todo in the database.
+   * @param {string} id - The unique identifier of the todo to be updated.
+   * @param {Todo} todo - The updated todo object.
+   * @returns {Promise<void>} A promise that resolves to void.
+  */
+  static updateTodo = async (todo: Todo): Promise<void> => {
+    const query = 'UPDATE todos SET todo = ?, done = ? WHERE id = ?'
     try {
-        
+      (await db).runAsync(query, [todo.todo, todo.done, todo.id])
     } catch (e) {
-      console.error('Error updating note: ', e)
+      console.error(Strings.ERRORS.UPDATE, e)
     }
   }
-  */
+  
 }

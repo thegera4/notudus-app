@@ -9,6 +9,7 @@ import 'react-native-get-random-values'
 import { initDB } from '@/utils/db'
 import SpaceMonodRegular from '../assets/fonts/SpaceMono-Regular.ttf'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { BottomSheetProvider } from '@/contexts/bottomSheetContext'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
@@ -24,6 +25,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <BottomSheetProvider>
       <AuthProvider>
         <ThemeProvider value={DarkTheme}>
           <Stack>
@@ -33,6 +35,7 @@ export default function RootLayout() {
           </Stack>
         </ThemeProvider>
       </AuthProvider>
+      </BottomSheetProvider>
     </GestureHandlerRootView>
   );
 }

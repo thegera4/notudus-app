@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react'
-import FAB from '@/components/shared/FAB'
 import TopBar from '@/components/shared/TopBar'
 import BottomSheet from '@/components/todos/BottomSheet'
 import { ScreenEnum } from '@/constants/Enums'
@@ -12,8 +11,9 @@ import NoDataAnimation from '@/components/shared/NoDataAnimation'
 
 export default function TodoScreen() {
 
-  const [bottomSheetVisible, setBottomSheetVisible] = useState<boolean>(false)
   const [todos, setTodos] = useState<Todo[]>([])
+  const [bottomSheetVisible, setBottomSheetVisible] = useState<boolean>(false)
+  const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
 
   /** This function fetches todos from the database.*/
   const fetchTodos = async () => {
@@ -37,6 +37,12 @@ export default function TodoScreen() {
   const getItemLayout = useCallback((data: any, index: number) => (
     { length: 50, offset: 50 * index, index }
   ), [])
+  
+  /** This function opens the bottom sheet to add/update a todo.*/
+  const openBottomSheet = (todo: Todo | null = null) => {
+    setSelectedTodo(todo)
+    setBottomSheetVisible(true)
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -51,12 +57,12 @@ export default function TodoScreen() {
           getItemLayout={getItemLayout}
         />
       }
-      <FAB onPress={() => setBottomSheetVisible(true)}/>
       { bottomSheetVisible && 
         <BottomSheet 
           setVisible={() => setBottomSheetVisible(!bottomSheetVisible)} 
           todos={todos} 
           setTodos={setTodos}
+          selectedTodo={selectedTodo}
         /> 
       }
     </SafeAreaView>

@@ -76,13 +76,14 @@ export interface CustomModalProps {
 export type BottomSheetProps = {
     setVisible: () => void,
     todos: Todo[],
-    setTodos: (todos: Todo[]) => void
+    setTodos: (todos: Todo[]) => void,
+    selectedTodo?: Todo | null
 }
 
 /**Type for the TodoItem component props.*/
 export type TodoItemProps = {
     todo: Todo,
-    onDelete: (id: string) => void
+    onDelete: (id: string) => void,
 }
 
 /**Type for the NoDataAnimation component props.*/

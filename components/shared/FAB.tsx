@@ -17,9 +17,9 @@ export default function FAB({ onPress }: FABProps ) {
 const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,
+    bottom: 10,
+    left: '50%',
+    marginLeft: -28,
     backgroundColor: 'green',
     borderRadius: 28,
     width: 56,

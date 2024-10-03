@@ -104,9 +104,6 @@ export default function NotesScreen() {
     }
   }, [view])
 
-  /** This function opens the Add Note screen when the FAB is pressed.*/
-  const handleAddNote = (): void => router.navigate(addNoteRoute)
-
   /** 
    * This function handles the press event of a note item (navigates to the Add Note screen with the note data to be edited).
    * @param {NoteModelType} note - The note object that contains the information to be edited.
@@ -145,7 +142,6 @@ export default function NotesScreen() {
           initialNumToRender={10}
         />
       }
-      <FAB onPress={handleAddNote}/>
       <SearchOverlay 
         visible={isSearchVisible}
         notes={notes}

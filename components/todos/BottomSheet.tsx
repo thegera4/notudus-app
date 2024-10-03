@@ -8,9 +8,9 @@ import { v4 as uuidv4 } from 'uuid'
 import { Strings } from '@/constants/Strings'
 
 /** This component is a BottomSheet used to add todos.*/
-export default function BottomSheet({ setVisible, setTodos, todos }: BottomSheetProps) {
+export default function BottomSheet({ setVisible, setTodos, todos, selectedTodo }: BottomSheetProps) {
 
-  const [content, setContent] = useState<string>('')
+  const [content, setContent] = useState<string>(selectedTodo ? selectedTodo.todo : '')
   const [bottomSheetHeight] = useState(Dimensions.get('window').height * 0.5)
 
   const slideUpRef = useRef<Animated.Value>(new Animated.Value(300)).current
@@ -30,6 +30,9 @@ export default function BottomSheet({ setVisible, setTodos, todos }: BottomSheet
   // Trigger the slideUp animation when the component mounts.
   useEffect(() => { slideUp() }, [])
 
+  // Set the content of the todo to be updated.
+  useEffect(() => { selectedTodo && setContent(selectedTodo.todo) }, [selectedTodo])
+
   /** This function closes the BottomSheet by triggering the slideDown animation.*/
   const closeBottomSheet = (): void => { slideDown(); setTimeout(() => setVisible(), 200) }
 
@@ -37,13 +40,20 @@ export default function BottomSheet({ setVisible, setTodos, todos }: BottomSheet
   const saveTodo = async (): Promise<void> => {
     if (!content.trim()) return
     try{
-      const newTodo: Todo = {
-        id: uuidv4(),
-        todo: content,
-        done: 0,
+      if(selectedTodo){
+        const updatedTodo: Todo = { ...selectedTodo, todo: content }
+        await Todo.updateTodo(updatedTodo)
+        const updatedTodos = todos.map(todo => todo.id === selectedTodo.id ? updatedTodo : todo)
+        setTodos(updatedTodos)
+      } else {
+        const newTodo: Todo = {
+          id: uuidv4(),
+          todo: content,
+          done: 0,
+        }
+        await Todo.insertTodo(newTodo)
+        setTodos([...todos, newTodo])
       }
-      await Todo.insertTodo(newTodo)
-      setTodos([...todos, newTodo])
     } catch (e) {
       console.error(Strings.ERRORS.INSERT, e)
     } finally {

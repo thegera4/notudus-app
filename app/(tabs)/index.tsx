@@ -1,9 +1,8 @@
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { FlatList, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ListNoteItem from '@/components/notes/ListNoteItem'
 import TopBar from '@/components/shared/TopBar'
-import FAB from '@/components/shared/FAB'
 import GridNoteItem from '@/components/notes/GridNoteItem'
 import SearchOverlay from '@/components/notes/SearchOverlay'
 import { ScreenEnum } from '@/constants/Enums'
@@ -18,7 +17,9 @@ import { Strings}  from '@/constants/Strings'
 import Note from '@/models/Note'
 import NoDataAnimation from '@/components/shared/NoDataAnimation'
 
-/**The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.*/
+//TODO: implement loading component for the notes screen when the notes are being fetched from the database.
+
+/** The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.*/
 export default function NotesScreen() {
 
   const [notes, setNotes] = useState<NoteModelType[]>([])
@@ -27,6 +28,8 @@ export default function NotesScreen() {
   const [searchTerm, setSearchTerm] = useState<string>('')
 
   const { auth, setAuth } = useAuth()
+
+  const flatListRef = useRef<FlatList<NoteModelType>>(null)
 
   const filteredNotes = useMemo(() => Note.getNotes(auth), [auth])
 
@@ -71,9 +74,9 @@ export default function NotesScreen() {
   }, [filteredNotes]) 
 
   /**
-   * This function handles the authentication of the user when the lock icon is pressed. It uses the LocalAuthentication API to 
-   * authenticate the user with their fingerprint/password. If the user is already authenticated, it hides the private notes.
-   * @returns {void} This function does not return anything.
+  * This function handles the authentication of the user when the lock icon is pressed. It uses the LocalAuthentication API to 
+  * authenticate the user with their fingerprint/password. If the user is already authenticated, it hides the private notes.
+  * @returns {void} This function does not return anything.
   */
   const handleAuth = useCallback(async (): Promise<void> => { 
     if(auth){ setAuth(false); return }
@@ -86,9 +89,9 @@ export default function NotesScreen() {
   }, [auth])
 
   /** 
-   * This function changes the value stored in shared preferences for the view of the notes screen,
-   * and also changes the view state to show the notes in a grid or list view.
-   * @returns {void} This function does not return anything.
+  * This function changes the value stored in shared preferences for the view of the notes screen,
+  * and also changes the view state to show the notes in a grid or list view.
+  * @returns {void} This function does not return anything.
   */
   const handleView = useCallback(async (): Promise<void> => {
     try {
@@ -105,10 +108,10 @@ export default function NotesScreen() {
   }, [view])
 
   /** 
-   * This function handles the press event of a note item (navigates to the Add Note screen with the note data to be edited).
-   * @param {NoteModelType} note - The note object that contains the information to be edited.
-   * @returns {void} This function does not return anything.
-   * */
+  * This function handles the press event of a note item (navigates to the Add Note screen with the note data to be edited).
+  * @param {NoteModelType} note - The note object that contains the information to be edited.
+  * @returns {void} This function does not return anything.
+  */
   const handleNotePressed = (note: NoteModelType): void => {
     const noteData: NoteModelType = {
       id: note.id,
@@ -120,36 +123,38 @@ export default function NotesScreen() {
     router.push({pathname: addNoteRoute, params: { note: JSON.stringify(noteData) }})
   }
 
+  /** This function provides the layout for each item. 
+  * @param {any} _data - The data for the item.
+  * @param {number} index - The index of the item.
+  * @returns {object} An object containing the length, offset, and index of the item.
+  */
+  const getItemLayout = useCallback((_data: any, index: number) => ({length: 50, offset: 50 * index, index}), [])
+
+  // Scroll to the last item when a new todo is added.
+  useEffect(() => {
+    if (notes && notes.length > 0) {
+      setTimeout(() => { flatListRef.current?.scrollToIndex({index: notes.length - 1, animated: true}) }, 100)
+    }
+  }, [notes])
+
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <TopBar 
-        screen={ScreenEnum.Notes} 
-        onLockPress={handleAuth} 
-        auth={auth} 
-        onViewPress={handleView} 
-        view={view} 
-        onSearchPress={handleSearchPress}
+      <TopBar screen={ScreenEnum.Notes} onLockPress={handleAuth} auth={auth} onViewPress={handleView} view={view} onSearchPress={handleSearchPress}/>
+      <FlatList
+        ref={flatListRef}
+        data={notes}
+        renderItem={({item}) => view === Strings.NOTES.LIST ? 
+          <ListNoteItem note={item} onPress={handleNotePressed} /> : <GridNoteItem note={item} onPress={handleNotePressed}/>
+        }
+        keyExtractor={item => item.id}
+        numColumns={view === Strings.NOTES.GRID ? 2 : 1}
+        key={view} // key prop is needed to re-render the FlatList when the view changes
+        initialNumToRender={10}
+        windowSize={10}
+        getItemLayout={getItemLayout}
+        ListEmptyComponent={<NoDataAnimation screen={ScreenEnum.Notes}/>}
       />
-      { notes.length === 0 || notes === undefined ? <NoDataAnimation screen={ScreenEnum.Notes}/> :
-        <FlatList
-          data={notes}
-          renderItem={({item}) => view === Strings.NOTES.LIST ? 
-            <ListNoteItem note={item} onPress={handleNotePressed} /> : <GridNoteItem note={item} onPress={handleNotePressed}/>
-          }
-          keyExtractor={item => item.id}
-          numColumns={view === Strings.NOTES.GRID ? 2 : 1}
-          key={view} // key prop is needed to re-render the FlatList when the view changes
-          initialNumToRender={10}
-        />
-      }
-      <SearchOverlay 
-        visible={isSearchVisible}
-        notes={notes}
-        onClose={handleCloseSearch}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm} 
-        handleNotePressed={handleNotePressed}
-      />
+      <SearchOverlay visible={isSearchVisible} notes={notes} onClose={handleCloseSearch} searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleNotePressed={handleNotePressed}/>
     </SafeAreaView>
   )
 }

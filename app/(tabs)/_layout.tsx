@@ -5,9 +5,7 @@ import FAB from '@/components/shared/FAB';
 import { View } from 'react-native'
 import { addNoteRoute } from '@/constants/Routes';
 import { useNavigationState } from "@react-navigation/native"; 
-import { useBottomSheet } from '@/contexts/bottomSheetContext';
-
-//TODO: fix the add todo functionality in the context
+import { useBottomSheet } from '@/hooks/useBottomSheet'
 
 export default function TabLayout() {
 

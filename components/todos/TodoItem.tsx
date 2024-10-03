@@ -3,7 +3,7 @@ import { TodoItemProps } from '@/types'
 import { Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Swipeable } from 'react-native-gesture-handler'
 import { Ionicons } from '@expo/vector-icons'
-import { useBottomSheet } from '@/contexts/bottomSheetContext'
+import { useBottomSheet } from '@/hooks/useBottomSheet'
 
 //TODO: check if animation can be added to the swipeable component to make the item to slide to the left when deleted.
 //TODO: implement the logic to mark a todo as done when the item is pressed as well as to strikethrough the text.

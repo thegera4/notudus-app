@@ -89,4 +89,16 @@ export type TodoItemProps = {
 /**Type for the NoDataAnimation component props.*/
 export type NoDataAnimationProps = {
     screen: string
-  }
+}
+
+/**Type for the BottomSheetContextProps.*/
+export interface BottomSheetContextProps {
+    openBottomSheet: (todo?: Todo | null) => void;
+    todos: Todo[];
+    setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+}
+
+/**Type for the BottomSheetProviderProps.*/
+export interface BottomSheetProviderProps {
+    children: React.ReactNode;
+}

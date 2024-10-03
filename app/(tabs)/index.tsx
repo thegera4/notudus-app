@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { FlatList, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ListNoteItem from '@/components/notes/ListNoteItem'
@@ -16,8 +16,7 @@ import {addNoteRoute} from "@/constants/Routes"
 import { Strings}  from '@/constants/Strings'
 import Note from '@/models/Note'
 import NoDataAnimation from '@/components/shared/NoDataAnimation'
-
-//TODO: implement loading component for the notes screen when the notes are being fetched from the database.
+import CustomLoading from '@/components/shared/CustomLoading'
 
 /** The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.*/
 export default function NotesScreen() {
@@ -26,6 +25,7 @@ export default function NotesScreen() {
   const [view, setView] = useState<string>(Strings.NOTES.LIST)
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false)
   const [searchTerm, setSearchTerm] = useState<string>('')
+  const [screenIsLoading, setScreenIsLoading] = useState<boolean>(true)
 
   const { auth, setAuth } = useAuth()
 
@@ -56,6 +56,7 @@ export default function NotesScreen() {
         try{
           const notes = await Note.getNotes(auth) as NoteModelType[]
           setNotes(notes)
+          setScreenIsLoading(false)
         } catch (e) {
           console.error(Strings.ERRORS.LOADING, e)
         }
@@ -69,6 +70,7 @@ export default function NotesScreen() {
     const fetchFilteredNotes = async () => {
       const notes = await filteredNotes
       setNotes(notes)
+      setScreenIsLoading(false)
     }
     fetchFilteredNotes()
   }, [filteredNotes]) 
@@ -139,21 +141,25 @@ export default function NotesScreen() {
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <TopBar screen={ScreenEnum.Notes} onLockPress={handleAuth} auth={auth} onViewPress={handleView} view={view} onSearchPress={handleSearchPress}/>
-      <FlatList
-        ref={flatListRef}
-        data={notes}
-        renderItem={({item}) => view === Strings.NOTES.LIST ? 
-          <ListNoteItem note={item} onPress={handleNotePressed} /> : <GridNoteItem note={item} onPress={handleNotePressed}/>
-        }
-        keyExtractor={item => item.id}
-        numColumns={view === Strings.NOTES.GRID ? 2 : 1}
-        key={view} // key prop is needed to re-render the FlatList when the view changes
-        initialNumToRender={10}
-        windowSize={10}
-        getItemLayout={getItemLayout}
-        ListEmptyComponent={<NoDataAnimation screen={ScreenEnum.Notes}/>}
-      />
+      { screenIsLoading ? <CustomLoading /> :
+        <>
+          <TopBar screen={ScreenEnum.Notes} onLockPress={handleAuth} auth={auth} onViewPress={handleView} view={view} onSearchPress={handleSearchPress}/>
+          <FlatList
+            ref={flatListRef}
+            data={notes}
+            renderItem={({item}) => view === Strings.NOTES.LIST ? 
+              <ListNoteItem note={item} onPress={handleNotePressed} /> : <GridNoteItem note={item} onPress={handleNotePressed}/>
+            }
+            keyExtractor={item => item.id}
+            numColumns={view === Strings.NOTES.GRID ? 2 : 1}
+            key={view} // key prop is needed to re-render the FlatList when the view changes
+            initialNumToRender={10}
+            windowSize={10}
+            getItemLayout={getItemLayout}
+            ListEmptyComponent={<NoDataAnimation screen={ScreenEnum.Notes}/>}
+          />
+        </>
+      }
       <SearchOverlay visible={isSearchVisible} notes={notes} onClose={handleCloseSearch} searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleNotePressed={handleNotePressed}/>
     </SafeAreaView>
   )

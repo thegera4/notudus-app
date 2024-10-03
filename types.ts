@@ -96,6 +96,7 @@ export interface BottomSheetContextProps {
     openBottomSheet: (todo?: Todo | null) => void;
     todos: Todo[];
     setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+    screenIsLoading: boolean;
 }
 
 /**Type for the BottomSheetProviderProps.*/

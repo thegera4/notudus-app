@@ -8,10 +8,11 @@ import { ScreenEnum } from '@/constants/Enums'
 import { Strings } from '@/constants/Strings'
 import Todo from '@/models/Todo'
 import { useBottomSheet } from '@/hooks/useBottomSheet'
+import CustomLoading from '@/components/shared/CustomLoading'
 
 export default function TodoScreen() {
 
-  const { todos, setTodos } = useBottomSheet()
+  const { todos, setTodos, screenIsLoading } = useBottomSheet()
 
   const flatListRef = useRef<FlatList<Todo>>(null)
 
@@ -41,17 +42,21 @@ export default function TodoScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <TopBar screen={ScreenEnum.Todos} auth={false} view={Strings.TOPBAR.TODOS} numberOfTasks={todos?.length}/>
-      <FlatList 
-        ref={flatListRef}
-        data={todos} 
-        keyExtractor={item => item.id} 
-        renderItem={({item}: {item: Todo}) => <TodoItem todo={item} onDelete={deleteTodo} />} 
-        initialNumToRender={10}
-        windowSize={10}
-        getItemLayout={getItemLayout}
-        ListEmptyComponent={<NoDataAnimation screen={ScreenEnum.Todos}/>}
-      />
+      { screenIsLoading ? <CustomLoading /> :
+        <>
+          <TopBar screen={ScreenEnum.Todos} auth={false} view={Strings.TOPBAR.TODOS} numberOfTasks={todos?.length}/>
+          <FlatList 
+            ref={flatListRef}
+            data={todos} 
+            keyExtractor={item => item.id} 
+            renderItem={({item}: {item: Todo}) => <TodoItem todo={item} onDelete={deleteTodo} />} 
+            initialNumToRender={10}
+            windowSize={10}
+            getItemLayout={getItemLayout}
+            ListEmptyComponent={<NoDataAnimation screen={ScreenEnum.Todos}/>}
+          />
+        </>
+      }
     </SafeAreaView>
   );
 }

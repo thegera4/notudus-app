@@ -7,12 +7,14 @@ export const BottomSheetContext = createContext<BottomSheetContextProps>({
   openBottomSheet: () => {},
   todos: [],
   setTodos: () => {},
+  screenIsLoading: false
 });
 
 export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({children}) => {
   const [todos, setTodos] = useState<Todo[]>([])
   const [bottomSheetVisible, setBottomSheetVisible] = useState<boolean>(false)
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
+  const [screenIsLoading, setScreenIsLoading] = useState<boolean>(true)
 
   // Fetch todos from the database on app load
   useEffect(() => {
@@ -22,6 +24,7 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({childre
       setTodos(todos)
     }
     fetchTodos()
+    setScreenIsLoading(false)
   }, [])
 
   /** This function opens the BottomSheet to add or update a todo.
@@ -34,7 +37,7 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({childre
   }
 
   return (
-    <BottomSheetContext.Provider value={{ openBottomSheet, todos, setTodos }}>
+    <BottomSheetContext.Provider value={{ openBottomSheet, todos, setTodos, screenIsLoading }}>
       { children }
       { bottomSheetVisible && (
         <BottomSheet

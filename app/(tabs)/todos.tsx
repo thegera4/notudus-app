@@ -26,6 +26,16 @@ export default function TodoScreen() {
     setTodos!(updatedTodos)
   }
 
+  /** This function updates a todo in the database.
+   * @param {Todo} updatedTodo - The updated todo object.
+   * @returns {Promise<void>} A promise that resolves when the todo is updated.
+  */
+  const updateTodo = async (updatedTodo: Todo): Promise<void> => {
+    await Todo.updateTodo(updatedTodo)
+    const updatedTodos = todos!.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo))
+    setTodos!(updatedTodos)
+  };
+
   /** This function provides the layout for each item. 
   * @param {any} _data - The data for the item.
   * @param {number} index - The index of the item.
@@ -44,12 +54,12 @@ export default function TodoScreen() {
     <SafeAreaView style={styles.safeArea}>
       { screenIsLoading ? <CustomLoading /> :
         <>
-          <TopBar screen={ScreenEnum.Todos} auth={false} view={Strings.TOPBAR.TODOS} numberOfTasks={todos?.length}/>
+          <TopBar screen={ScreenEnum.Todos} auth={false} view={Strings.TOPBAR.TODOS} tasks={todos}/>
           <FlatList 
             ref={flatListRef}
             data={todos} 
             keyExtractor={item => item.id} 
-            renderItem={({item}: {item: Todo}) => <TodoItem todo={item} onDelete={deleteTodo} />} 
+            renderItem={({item}: {item: Todo}) => <TodoItem todo={item} onDelete={deleteTodo} onUpdate={updateTodo}/>} 
             initialNumToRender={10}
             windowSize={10}
             getItemLayout={getItemLayout}

@@ -29,7 +29,7 @@ export type TopBarProps = {
     currentNote?: NoteModelType,
     onShieldPress?: () => void,
     newNoteLocked?: boolean,
-    numberOfTasks?: number
+    tasks?: Todo[]
 }
 
 /**Props received by the TopBarIcon component.*/
@@ -84,6 +84,7 @@ export type BottomSheetProps = {
 export type TodoItemProps = {
     todo: Todo,
     onDelete: (id: string) => void,
+    onUpdate: (todo: Todo) => void
 }
 
 /**Type for the NoDataAnimation component props.*/

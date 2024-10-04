@@ -1,45 +1,73 @@
-import React from 'react'
+import React, { useRef, useState, useMemo } from 'react'
 import { TodoItemProps } from '@/types'
-import { Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { Text, StyleSheet, TouchableOpacity, Animated } from 'react-native'
 import { Swipeable } from 'react-native-gesture-handler'
 import { Ionicons } from '@expo/vector-icons'
 import { useBottomSheet } from '@/hooks/useBottomSheet'
+import { Strings } from '@/constants/Strings'
+import Todo from '@/models/Todo'
 
-//TODO: check if animation can be added to the swipeable component to make the item to slide to the left when deleted.
-//TODO: implement the logic to mark a todo as done when the item is pressed as well as to strikethrough the text.
 
 /** This component is used to display a todo item in the Todos screen.*/
-function TodoItem ({ todo, onDelete }: TodoItemProps) {
+function TodoItem ({ todo, onDelete, onUpdate }: TodoItemProps) {
 
   const { openBottomSheet } = useBottomSheet()
 
+  const slideAnim = useRef(new Animated.Value(0)).current
+
+  const [currentTodo, setCurrentTodo] = useState<Todo>(todo)
+
+  const styles = useMemo(() => getStyles(slideAnim, currentTodo),  [slideAnim, currentTodo])
+
+  /** This function handles the delete action with animation.*/
+  const handleDelete = (): void => {
+    Animated.timing(slideAnim, {toValue: -500, duration: 300, useNativeDriver: true}).start(() => onDelete(todo.id))
+  }
+
   /** This function renders the right action for the swipeable component (DELETE).*/
-  const renderRightActions = () => (
-    <TouchableOpacity style={styles.deleteIconButton} onPress={() => onDelete(todo.id)}>
+  const renderRightActions = (): React.JSX.Element => (
+    <TouchableOpacity style={styles.deleteIconButton} onPress={handleDelete}>
       <Ionicons name="trash" size={24} color="red" />
     </TouchableOpacity>
   )
 
   /** This function renders the left action for the swipeable component (UPDATE).*/
-  const renderLeftActions = () => (
+  const renderLeftActions = (): React.JSX.Element => (
     <TouchableOpacity style={styles.editconButton} onPress={() => openBottomSheet(todo)}>
       <Ionicons name="pencil" size={24} color="green" />
     </TouchableOpacity>
   )
 
+  /** This function handles the tap action on the item (updates the done status in the database).*/
+  const handleItemTap = async (): Promise<void> => {
+    try{
+      const updatedTodo = {...todo, done: todo.done === 0 ? 1 : 0}
+      await onUpdate(updatedTodo)
+      setCurrentTodo(updatedTodo)
+    } catch (error) {
+      console.error(Strings.ERRORS.UPDATE, error)
+    }
+  }
+
   return (
     <Swipeable renderRightActions={renderRightActions} renderLeftActions={renderLeftActions}>
-      <TouchableOpacity style={styles.container} onPress={() => console.log("aqui hay que tachar la letra y markar el todo como done")}>
-        <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
-          {todo.todo}
-        </Text>
-      </TouchableOpacity>
+      <Animated.View style={[styles.container, styles.slideAnimation]}>
+        <TouchableOpacity style={styles.touchable} onPress={handleItemTap}>
+          <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">{currentTodo.todo}</Text>
+        </TouchableOpacity>
+      </Animated.View> 
     </Swipeable>
   )
 }
 
-const styles = StyleSheet.create({
-  text: { color: 'white', fontSize: 16 },
+const getStyles = (slideAnim: Animated.Value, currentTodo: Todo) => StyleSheet.create({
+  touchable: { flex: 1 },
+  slideAnimation: { transform: [{ translateX: slideAnim }] },
+  text: { 
+    color: currentTodo.done === 1 ? 'gray' : 'white',
+    fontSize: 16,
+    textDecorationLine: currentTodo.done === 1 ? 'line-through' : 'none',
+  },
   deleteIconButton: {
     justifyContent: 'center',
     alignItems: 'center',

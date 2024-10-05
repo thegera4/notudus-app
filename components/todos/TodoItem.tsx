@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from 'react'
+import React, { useRef, useState, useMemo, useEffect } from 'react'
 import { TodoItemProps } from '@/types'
 import { Text, StyleSheet, TouchableOpacity, Animated } from 'react-native'
 import { Swipeable } from 'react-native-gesture-handler'
@@ -6,7 +6,6 @@ import { Ionicons } from '@expo/vector-icons'
 import { useBottomSheet } from '@/hooks/useBottomSheet'
 import { Strings } from '@/constants/Strings'
 import Todo from '@/models/Todo'
-
 
 /** This component is used to display a todo item in the Todos screen.*/
 function TodoItem ({ todo, onDelete, onUpdate }: TodoItemProps) {
@@ -16,6 +15,10 @@ function TodoItem ({ todo, onDelete, onUpdate }: TodoItemProps) {
   const slideAnim = useRef(new Animated.Value(0)).current
 
   const [currentTodo, setCurrentTodo] = useState<Todo>(todo)
+
+  useEffect(() => {
+    setCurrentTodo(todo)
+  }, [todo])
 
   const styles = useMemo(() => getStyles(slideAnim, currentTodo),  [slideAnim, currentTodo])
 

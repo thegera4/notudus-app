@@ -21,6 +21,7 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({childre
     /** This function fetches todos from the database.*/
     const fetchTodos = async () => {
       const todos: Todo[] = await Todo.getTodos()
+      todos.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       setTodos(todos)
     }
     fetchTodos()

@@ -14,7 +14,7 @@ export default function GridNoteItem ({note, onPress}: NoteItemProps) {
           {note.locked === 1 && <Text style={styles.locked}>Private</Text>}
           <Text style={styles.title} numberOfLines={1}>{note.title}</Text>
           <Text style={styles.content} numberOfLines={2}>{note.content}</Text>
-          <Text style={styles.date}>{note.date}</Text>
+          <Text style={styles.date}>{note.date.split('T')[0]}</Text>
         </View>
       </Pressable>
     </View>

@@ -50,6 +50,7 @@ export default function BottomSheet({ setVisible, setTodos, todos, selectedTodo 
           id: uuidv4(),
           todo: content,
           done: 0,
+          date: new Date().toISOString()
         }
         await Todo.insertTodo(newTodo)
         setTodos([...todos, newTodo])

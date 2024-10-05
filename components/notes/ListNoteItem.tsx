@@ -15,7 +15,7 @@ export default function ListNoteItem({note, onPress}: NoteItemProps) {
           {note.locked === 1 && <PrivateText />}
           <Text style={styles.noteTitle} numberOfLines={1} ellipsizeMode="tail">{note.title}</Text>
           <Text style={styles.noteDescription} numberOfLines={2}>{note.content}</Text>
-          <Text style={styles.noteDate}>Last modified: {note.date}</Text>
+          <Text style={styles.noteDate}>Last modified: {note.date.split('T')[0]}</Text>
         </View>
       </View>
     </Pressable>

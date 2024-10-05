@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { StyleSheet, FlatList } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TopBar from '@/components/shared/TopBar'
@@ -13,6 +13,8 @@ import CustomLoading from '@/components/shared/CustomLoading'
 export default function TodoScreen() {
 
   const { todos, setTodos, screenIsLoading } = useBottomSheet()
+
+  todos.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
   const flatListRef = useRef<FlatList<Todo>>(null)
 
@@ -44,11 +46,11 @@ export default function TodoScreen() {
   const getItemLayout = useCallback((_data: any, index: number) => ({length: 50, offset: 50 * index, index}), [])
 
   // Scroll to the last item when a new todo is added.
-  useEffect(() => {
+  /*useEffect(() => {
     if (todos && todos.length > 0) {
       setTimeout(() => { flatListRef.current?.scrollToIndex({index: todos.length - 1, animated: true}) }, 100)
     }
-  }, [todos])
+  }, [todos])*/
 
   return (
     <SafeAreaView style={styles.safeArea}>

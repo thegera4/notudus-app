@@ -18,6 +18,8 @@ import Note from '@/models/Note'
 import NoDataAnimation from '@/components/shared/NoDataAnimation'
 import CustomLoading from '@/components/shared/CustomLoading'
 
+//TODO2: check to see i animation can be added for appearing (new) notes
+
 /** The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.*/
 export default function NotesScreen() {
 
@@ -55,6 +57,7 @@ export default function NotesScreen() {
       const loadNotes = async () => {
         try{
           const notes = await Note.getNotes(auth) as NoteModelType[]
+          notes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
           setNotes(notes)
           setScreenIsLoading(false)
         } catch (e) {
@@ -69,6 +72,7 @@ export default function NotesScreen() {
   useEffect(() => { 
     const fetchFilteredNotes = async () => {
       const notes = await filteredNotes
+      notes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       setNotes(notes)
       setScreenIsLoading(false)
     }
@@ -132,12 +136,12 @@ export default function NotesScreen() {
   */
   const getItemLayout = useCallback((_data: any, index: number) => ({length: 50, offset: 50 * index, index}), [])
 
-  // Scroll to the last item when a new todo is added.
-  useEffect(() => {
-    if (notes && notes.length > 0) {
+  // Scroll to the last item when a new note is added.
+  /*useEffect(() => {
+    if (notes && notes.length > 0 && view === Strings.NOTES.LIST) {
       setTimeout(() => { flatListRef.current?.scrollToIndex({index: notes.length - 1, animated: true}) }, 100)
     }
-  }, [notes])
+  }, [notes])*/
 
   return (
     <SafeAreaView style={styles.safeAreaView}>

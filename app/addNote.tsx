@@ -54,7 +54,7 @@ export default function AddNoteScreen() {
         title,
         content,
         locked,
-        date: new Date().toISOString().split('T')[0],
+        date: new Date().toISOString(),
       }
       if(showPrivateText){
         preparedNote.locked = 1

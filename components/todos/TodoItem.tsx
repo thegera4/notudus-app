@@ -16,9 +16,7 @@ function TodoItem ({ todo, onDelete, onUpdate }: TodoItemProps) {
 
   const [currentTodo, setCurrentTodo] = useState<Todo>(todo)
 
-  useEffect(() => {
-    setCurrentTodo(todo)
-  }, [todo])
+  useEffect(() => { setCurrentTodo(todo) }, [todo])
 
   const styles = useMemo(() => getStyles(slideAnim, currentTodo),  [slideAnim, currentTodo])
 

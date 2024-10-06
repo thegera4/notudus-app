@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from 'react';
 import Todo from '@/models/Todo';
 import BottomSheet from '@/components/todos/BottomSheet';
 import { BottomSheetContextProps, BottomSheetProviderProps } from '@/types';
+import { Strings } from '@/constants/Strings';
 
 export const BottomSheetContext = createContext<BottomSheetContextProps>({
   openBottomSheet: () => {},
@@ -20,12 +21,17 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({childre
   useEffect(() => {
     /** This function fetches todos from the database.*/
     const fetchTodos = async () => {
-      const todos: Todo[] = await Todo.getTodos()
-      todos.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      setTodos(todos)
+      try{
+        const todos: Todo[] = await Todo.getTodos()
+        const sortedTodos = todos.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        setTodos(sortedTodos)
+      } catch (error) {
+        console.error(Strings.ERRORS.GET, error)
+      } finally {
+        setScreenIsLoading(false)
+      }
     }
     fetchTodos()
-    setScreenIsLoading(false)
   }, [])
 
   /** This function opens the BottomSheet to add or update a todo.

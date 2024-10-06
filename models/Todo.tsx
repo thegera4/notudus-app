@@ -30,9 +30,9 @@ export default class Todo {
   * @returns {Promise<void>} A promise that resolves to void.
   */
   static insertTodo = async (todo: Todo): Promise<void> => {
-    const query: string = 'INSERT INTO todos (id, todo, done) VALUES (?, ?, ?)'
+    const query: string = 'INSERT INTO todos (id, todo, done, date) VALUES (?, ?, ?, ?)'
     try {
-      (await db).runAsync(query, [todo.id, todo.todo, todo.done])
+      (await db).runAsync(query, [todo.id, todo.todo, todo.done, todo.date])
     } catch (e) {
       console.error(Strings.ERRORS.INSERT, e)
     }

@@ -6,9 +6,10 @@ import { BottomSheetProps } from '@/types'
 import Todo from '@/models/Todo'
 import { v4 as uuidv4 } from 'uuid'
 import { Strings } from '@/constants/Strings'
+import { slideDown, slideUp } from '@/utils/animations'
 
 /** This component is a BottomSheet used to add todos.*/
-export default function BottomSheet({ setVisible, setTodos, todos, selectedTodo }: BottomSheetProps) {
+export default function BottomSheet({setVisible, setTodos, todos, selectedTodo}: BottomSheetProps) {
 
   const [content, setContent] = useState<string>(selectedTodo ? selectedTodo.todo : '')
   const [bottomSheetHeight] = useState(Dimensions.get('window').height * 0.5)
@@ -17,24 +18,14 @@ export default function BottomSheet({ setVisible, setTodos, todos, selectedTodo 
 
   const styles = getStyles(slideUpRef, bottomSheetHeight, content)
 
-  /** This function is the animation definition to slide the BottomSheet up.*/
-  const slideUp = (): void => {
-    Animated.timing(slideUpRef, { toValue: 0, duration: 200, useNativeDriver: true }).start()
-  }
-
-  /** This function is the animation definition to slide the BottomSheet down.*/
-  const slideDown = (): void => {
-    Animated.timing(slideUpRef, { toValue: 300, duration: 200, useNativeDriver: true }).start()
-  }
-
-  // Trigger the slideUp animation when the component mounts.
-  useEffect(() => { slideUp() }, [])
+  // Triggers the slideUp animation when the component mounts.
+  useEffect(() => { slideUp(slideUpRef) }, [])
 
   // Set the content of the todo to be updated.
   useEffect(() => { selectedTodo && setContent(selectedTodo.todo) }, [selectedTodo])
 
   /** This function closes the BottomSheet by triggering the slideDown animation.*/
-  const closeBottomSheet = (): void => { slideDown(); setTimeout(() => setVisible(), 200) }
+  const closeBottomSheet = (): void => { slideDown(slideUpRef); setTimeout(() => setVisible(), 200) }
 
   /** This function saves a todo in the database.*/
   const saveTodo = async (): Promise<void> => {

@@ -18,8 +18,6 @@ import Note from '@/models/Note'
 import NoDataAnimation from '@/components/shared/NoDataAnimation'
 import CustomLoading from '@/components/shared/CustomLoading'
 
-//TODO2: check to see i animation can be added for appearing (new) notes
-
 /** The Notes screen shows a list of notes in a grid or list view. It is the default screen when the app is opened.*/
 export default function NotesScreen() {
 
@@ -152,7 +150,7 @@ export default function NotesScreen() {
             ref={flatListRef}
             data={notes}
             renderItem={({item}) => view === Strings.NOTES.LIST ? 
-              <ListNoteItem note={item} onPress={handleNotePressed} /> : <GridNoteItem note={item} onPress={handleNotePressed}/>
+              <ListNoteItem note={item} onPress={handleNotePressed}/> : <GridNoteItem note={item} onPress={handleNotePressed}/>
             }
             keyExtractor={item => item.id}
             numColumns={view === Strings.NOTES.GRID ? 2 : 1}

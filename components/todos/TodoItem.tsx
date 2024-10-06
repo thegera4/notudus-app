@@ -6,24 +6,28 @@ import { Ionicons } from '@expo/vector-icons'
 import { useBottomSheet } from '@/hooks/useBottomSheet'
 import { Strings } from '@/constants/Strings'
 import Todo from '@/models/Todo'
+import { slideAnimation, animateListItem } from '@/utils/animations'
 
 /** This component is used to display a todo item in the Todos screen.*/
 function TodoItem ({ todo, onDelete, onUpdate }: TodoItemProps) {
 
   const { openBottomSheet } = useBottomSheet()
 
-  const slideAnim = useRef(new Animated.Value(0)).current
+  const slideAnim: Animated.Value = useRef(new Animated.Value(0)).current
+  const scaleAnim: Animated.Value = useRef(new Animated.Value(0)).current
 
   const [currentTodo, setCurrentTodo] = useState<Todo>(todo)
 
+  useEffect(() => { animateListItem(scaleAnim) }, [])
+
   useEffect(() => { setCurrentTodo(todo) }, [todo])
 
-  const styles = useMemo(() => getStyles(slideAnim, currentTodo),  [slideAnim, currentTodo])
+  const styles = useMemo(
+    () => getStyles(slideAnim, currentTodo, scaleAnim), [slideAnim, currentTodo]
+  )
 
-  /** This function handles the delete action with animation.*/
-  const handleDelete = (): void => {
-    Animated.timing(slideAnim, {toValue: -500, duration: 300, useNativeDriver: true}).start(() => onDelete(todo.id))
-  }
+  /** This function handles the delete action with an animation that slides away the todo item.*/
+  const handleDelete = (): void => slideAnimation(slideAnim, () => onDelete(todo.id))
 
   /** This function renders the right action for the swipeable component (DELETE).*/
   const renderRightActions = (): React.JSX.Element => (
@@ -52,18 +56,25 @@ function TodoItem ({ todo, onDelete, onUpdate }: TodoItemProps) {
 
   return (
     <Swipeable renderRightActions={renderRightActions} renderLeftActions={renderLeftActions}>
-      <Animated.View style={[styles.container, styles.slideAnimation]}>
-        <TouchableOpacity style={styles.touchable} onPress={handleItemTap}>
-          <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">{currentTodo.todo}</Text>
-        </TouchableOpacity>
-      </Animated.View> 
+      <Animated.View style={styles.scaleAnimation}>
+        <Animated.View style={[styles.container, styles.slideAnimation]}>
+          <TouchableOpacity style={styles.touchable} onPress={handleItemTap}>
+            <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
+              {currentTodo.todo}
+            </Text>
+          </TouchableOpacity>
+        </Animated.View> 
+      </Animated.View>
     </Swipeable>
   )
 }
 
-const getStyles = (slideAnim: Animated.Value, currentTodo: Todo) => StyleSheet.create({
+const getStyles = (
+  slideAnim: Animated.Value, currentTodo: Todo, scaleAnim: Animated.Value
+) => StyleSheet.create({
   touchable: { flex: 1 },
   slideAnimation: { transform: [{ translateX: slideAnim }] },
+  scaleAnimation: { transform: [{ scale: scaleAnim }] },
   text: { 
     color: currentTodo.done === 1 ? 'gray' : 'white',
     fontSize: 16,

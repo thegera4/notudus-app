@@ -1,3 +1,4 @@
+import { fadeIn } from '@/utils/animations'
 import React, { useEffect, useRef } from 'react'
 import { View, StyleSheet, Animated } from 'react-native'
 
@@ -6,27 +7,7 @@ export default function CustomLoading() {
   const fadeAnim = useRef(new Animated.Value(0)).current
 
   // Creates a continuous fade in and out animation for the loading screen
-  useEffect(() => {
-    /** This function creates a fade in animation for the loading screen.*/
-    const fadeIn = () => {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start(() => fadeOut());
-    }
-
-    /** This function creates a fade out animation for the loading screen.*/
-    const fadeOut = () => {
-      Animated.timing(fadeAnim, {
-        toValue: 0.5,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start(() => fadeIn());
-    };
-
-    fadeIn();
-  }, [fadeAnim]);
+  useEffect(() => { fadeIn(fadeAnim) }, [fadeAnim])
 
   return (
     <View style={styles.container}>

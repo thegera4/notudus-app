@@ -45,7 +45,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="todos"
           options={{
-            title: 'ToDos',
+            title: 'Todos',
             tabBarIcon: ({ color, focused }) => ( 
               <TabBarIcon name={focused ? 'list' : 'list-outline'} color={color} />
             ),

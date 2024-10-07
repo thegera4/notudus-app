@@ -10,8 +10,6 @@ import Todo from '@/models/Todo'
 import { useBottomSheet } from '@/hooks/useBottomSheet'
 import CustomLoading from '@/components/shared/CustomLoading'
 
-//TODO: fix the order of the todo list when reloading the app it misses the state.
-
 export default function TodoScreen() {
 
   const { todos, setTodos, screenIsLoading } = useBottomSheet()

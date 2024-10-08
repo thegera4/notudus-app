@@ -28,6 +28,8 @@ export const Strings = {
       DELETE_NOTE_MESSAGE: 'Are you sure you want to delete this note?',
       DELETE: 'DELETE',
       CANCEL: 'CANCEL',
+      NO_AUTH_METHOD: 'No Authentication Method Found',
+      NO_AUTH_MESSAGE: 'To use this feature, you need to set up a security method in your device settings (fingerprint/pin/pattern).',
     },
     ERRORS: {
       ONBACK: 'Error while updating the note on back: ',

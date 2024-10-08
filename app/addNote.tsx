@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { TextInput, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
+import { TextInput, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TopBar from '@/components/shared/TopBar'
 import { ScreenEnum } from '@/constants/Enums'
@@ -60,7 +60,12 @@ export default function AddNoteScreen() {
         preparedNote.locked = 1
         try{
           const result = await LocalAuthentication.authenticateAsync()
-          result.success && currentNote ? Note.updateNote(currentNote.id, preparedNote) : Note.insertNote(preparedNote)
+          if (result.success){
+            currentNote ? Note.updateNote(currentNote.id, preparedNote) : Note.insertNote(preparedNote)
+          } 
+          else{
+            Alert.alert(Strings.MODALS.NO_AUTH_METHOD, Strings.MODALS.NO_AUTH_MESSAGE, [{text: 'OK'}])
+          }
         } catch (e) {
           console.error(Strings.ERRORS.ONBACK, e)
         }

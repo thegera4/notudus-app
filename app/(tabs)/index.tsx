@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
-import { FlatList, StyleSheet } from 'react-native'
+import { FlatList, StyleSheet, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ListNoteItem from '@/components/notes/ListNoteItem'
 import TopBar from '@/components/shared/TopBar'
@@ -86,7 +86,7 @@ export default function NotesScreen() {
     if(auth){ setAuth(false); return }
     try{
       const result = await LocalAuthentication.authenticateAsync()
-      result.success && setAuth(true)
+      result.success ? setAuth(true) : Alert.alert(Strings.MODALS.NO_AUTH_METHOD, Strings.MODALS.NO_AUTH_MESSAGE, [{text: 'OK'}])
     } catch (e) {
       console.error(Strings.ERRORS.AUTH_ERROR, e)
     }

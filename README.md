@@ -1,6 +1,8 @@
 # Notudus app
 
-Download directly from the Google Playstore: https://play.google.com/store/apps/details?id=com.jgmedellin.notudusapp
+Download directly from the Google Playstore: 
+
+https://play.google.com/store/apps/details?id=com.jgmedellin.notudusapp
 
 <img src="https://github.com/user-attachments/assets/1a8ed463-375f-45a6-a551-91b0c57e5c3d" height="300px" width="600px"/>
 

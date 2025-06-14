@@ -29,6 +29,10 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./notudus-app-94d7a90068e8.json"
+      }
+    }
   }
 }

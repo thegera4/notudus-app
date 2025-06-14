@@ -21,3 +21,6 @@ expo-env.d.ts
 
 #envs
 .env
+
+# Google Service Account
+notudus-app-94d7a90068e8.json

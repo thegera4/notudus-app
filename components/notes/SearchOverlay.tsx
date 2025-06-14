@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { View, TextInput, FlatList, StyleSheet, Modal, TouchableOpacity, Text, KeyboardAvoidingView } from 'react-native'
+import { View, TextInput, FlatList, StyleSheet, Modal, TouchableOpacity, TouchableWithoutFeedback, Text, KeyboardAvoidingView } from 'react-native'
 import ListNoteItem from '@/components/notes/ListNoteItem'
 import { NoteModelType, SearchOverlayProps } from '@/types'
 import { Colors } from '@/constants/Colors'
@@ -11,7 +11,6 @@ import { Strings } from '@/constants/Strings'
 export default function SearchOverlay({ visible, notes, onClose, searchTerm, setSearchTerm, handleNotePressed }: SearchOverlayProps) {
 
   const [filteredNotes, setFilteredNotes] = useState<NoteModelType[]>([])
-
   // Filter notes based on the search term
   useEffect(() => {
     if (searchTerm) {
@@ -21,33 +20,39 @@ export default function SearchOverlay({ visible, notes, onClose, searchTerm, set
     } else {
       setFilteredNotes([])
     }
-  }, [searchTerm, notes])
-
+  }, [searchTerm, notes]);
+  
   return (
     <Modal visible={visible} transparent={true} animationType="none">
       <KeyboardAvoidingView style={styles.overlay} behavior="padding">
-        <View style={styles.container}>
-          <View style={styles.searchBar}>
-            <TextInput
-              style={styles.input}
-              placeholder={Strings.MODALS.SEARCH_NOTES}
-              placeholderTextColor={Colors.inputs.textPlaceholder}
-              value={searchTerm}
-              onChangeText={setSearchTerm}
-              selectionColor={Colors.inputs.selection}
-              autoFocus={true}
-            />
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>CLOSE</Text>
-            </TouchableOpacity>
+        <TouchableOpacity activeOpacity={1} onPress={onClose} style={styles.touchableOverlay}>
+          <View style={styles.centeredContainer}>
+            <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+              <View style={styles.container}>
+                <View style={styles.searchBar}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder={Strings.MODALS.SEARCH_NOTES}
+                    placeholderTextColor={Colors.inputs.textPlaceholder}
+                    value={searchTerm}
+                    onChangeText={setSearchTerm}
+                    selectionColor={Colors.inputs.selection}
+                    autoFocus={true}
+                  />
+                  <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                    <Text style={styles.closeButtonText}>CLOSE</Text>
+                  </TouchableOpacity>
+                </View>
+                <FlatList
+                  style={styles.list}
+                  data={filteredNotes}
+                  renderItem={({ item }) => <ListNoteItem note={item} onPress={handleNotePressed}/>}
+                  keyExtractor={item => item.id}
+                />
+              </View>
+            </TouchableWithoutFeedback>
           </View>
-          <FlatList
-            style={styles.list}
-            data={filteredNotes}
-            renderItem={({ item }) => <ListNoteItem note={item} onPress={handleNotePressed}/>}
-            keyExtractor={item => item.id}
-          />
-        </View>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     </Modal>
   )
@@ -58,6 +63,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  },
+  centeredContainer: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
   },
   container: {
     width: '95%',
@@ -91,5 +101,9 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     color: 'green',
+  },
+  touchableOverlay: {
+    flex: 1,
+    width: '100%',
   },
 })

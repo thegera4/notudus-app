@@ -25,7 +25,14 @@
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle",
+        "gradleCommand": ":app:bundleRelease"
+      },
+      "env": {
+        "EXPO_ANDROID_TARGET_SDK_VERSION": "35"
+      }
     }
   },
   "submit": {

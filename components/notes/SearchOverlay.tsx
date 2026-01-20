@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { View, TextInput, FlatList, StyleSheet, Modal, TouchableOpacity, TouchableWithoutFeedback, Text, KeyboardAvoidingView } from 'react-native'
+import { useState, useEffect, useRef } from 'react'
+import { View, TextInput, FlatList, StyleSheet, Modal, TouchableOpacity, TouchableWithoutFeedback, Text, KeyboardAvoidingView, InteractionManager } from 'react-native'
 import ListNoteItem from '@/components/notes/ListNoteItem'
 import { NoteModelType, SearchOverlayProps } from '@/types'
 import { Colors } from '@/constants/Colors'
@@ -11,19 +11,30 @@ import { Strings } from '@/constants/Strings'
 export default function SearchOverlay({ visible, notes, onClose, searchTerm, setSearchTerm, handleNotePressed }: SearchOverlayProps) {
 
   const [filteredNotes, setFilteredNotes] = useState<NoteModelType[]>([])
+  const inputRef = useRef<TextInput>(null)
+
   // Filter notes based on the search term
   useEffect(() => {
     if (searchTerm) {
-      const filtered = notes.filter(note =>note.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      const filtered = notes.filter(note => note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         note.content.toLowerCase().includes(searchTerm.toLowerCase()))
       setFilteredNotes(filtered)
     } else {
       setFilteredNotes([])
     }
   }, [searchTerm, notes]);
-  
+
   return (
-    <Modal visible={visible} transparent={true} animationType="none">
+    <Modal
+      visible={visible}
+      transparent={true}
+      animationType="none"
+      onShow={() => {
+        InteractionManager.runAfterInteractions(() => {
+          setTimeout(() => { inputRef.current?.focus() }, 600)
+        })
+      }}
+    >
       <KeyboardAvoidingView style={styles.overlay} behavior="padding">
         <TouchableOpacity activeOpacity={1} onPress={onClose} style={styles.touchableOverlay}>
           <View style={styles.centeredContainer}>
@@ -31,13 +42,13 @@ export default function SearchOverlay({ visible, notes, onClose, searchTerm, set
               <View style={styles.container}>
                 <View style={styles.searchBar}>
                   <TextInput
+                    ref={inputRef}
                     style={styles.input}
                     placeholder={Strings.MODALS.SEARCH_NOTES}
                     placeholderTextColor={Colors.inputs.textPlaceholder}
                     value={searchTerm}
                     onChangeText={setSearchTerm}
                     selectionColor={Colors.inputs.selection}
-                    autoFocus={true}
                   />
                   <TouchableOpacity onPress={onClose} style={styles.closeButton}>
                     <Text style={styles.closeButtonText}>CLOSE</Text>
@@ -46,7 +57,7 @@ export default function SearchOverlay({ visible, notes, onClose, searchTerm, set
                 <FlatList
                   style={styles.list}
                   data={filteredNotes}
-                  renderItem={({ item }) => <ListNoteItem note={item} onPress={handleNotePressed}/>}
+                  renderItem={({ item }) => <ListNoteItem note={item} onPress={handleNotePressed} />}
                   keyExtractor={item => item.id}
                 />
               </View>

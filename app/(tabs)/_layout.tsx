@@ -1,15 +1,14 @@
-import { router, Tabs } from 'expo-router'
+import { router, Tabs, usePathname } from 'expo-router'
 import { TabBarIcon } from '@/components/navigation/TabBarIcon'
 import { Colors } from '@/constants/Colors'
 import FAB from '@/components/shared/FAB';
 import { View } from 'react-native'
 import { addNoteRoute } from '@/constants/Routes';
-import { useNavigationState } from "@react-navigation/native"; 
 import { useBottomSheet } from '@/hooks/useBottomSheet'
 
 export default function TabLayout() {
 
-  const navigationState = useNavigationState(state => state)
+  const pathname = usePathname()
 
   const { openBottomSheet } = useBottomSheet()
 
@@ -18,9 +17,7 @@ export default function TabLayout() {
 
   /** This function checks the selected screen/tab and returns the proper action for the FAB button.*/
   const getFabAction = (): void => {
-    const currentRoute = navigationState.routes[navigationState.index]?.state?.routes?.
-      [navigationState.routes[navigationState.index]?.state?.index ?? 0]?.name ?? 'unknown'
-    currentRoute === 'index' ? handleAddNote() : openBottomSheet()
+    pathname === '/' ? handleAddNote() : openBottomSheet()
   }
 
   return (

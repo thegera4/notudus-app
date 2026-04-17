@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { TextInput, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TopBar from '@/components/shared/TopBar'
 import { ScreenEnum } from '@/constants/Enums'
 import { Colors } from '@/constants/Colors'
-import { router, useLocalSearchParams } from 'expo-router'
+import { router, useLocalSearchParams, useNavigation } from 'expo-router'
 import NoteModelType from '@/models/Note'
 import PrivateText from '@/components/notes/PrivateText'
 import { useAuth } from "@/hooks/useAuth"
@@ -29,6 +29,8 @@ export default function AddNoteScreen() {
   const [showPrivateText, setShowPrivateText] = useState<boolean>(false)
 
   const { auth } = useAuth()
+  const navigation = useNavigation()
+  const isSaving = useRef(false)
 
   // Read the localParams and make it a valid object to work with (used to show the note if it exists).
   useEffect(() => { 
@@ -47,6 +49,7 @@ export default function AddNoteScreen() {
   /**This function handles the back event to save the new notes, or the updated information of an existing note.*/
   const onBack = async (): Promise<void> => {
     if( (currentNote && title === currentNote.title && content === currentNote.content) || (title === '' && content === '') ){
+      isSaving.current = true
       router.dismissAll()
     } else{
       const preparedNote: NoteModelType = {
@@ -65,16 +68,42 @@ export default function AddNoteScreen() {
           } 
           else{
             Alert.alert(Strings.MODALS.NO_AUTH_METHOD, Strings.MODALS.NO_AUTH_MESSAGE, [{text: 'OK'}])
+            return // Guard to avoid navigating away without saving if auth fails
           }
         } catch (e) {
           console.error(Strings.ERRORS.ONBACK, e)
+          return
         }
       } else {
         currentNote ? Note.updateNote(currentNote.id, preparedNote) : Note.insertNote(preparedNote)
       }
+      isSaving.current = true
       router.navigate(homeRoute)
     }
   }
+
+  const onBackRef = useRef(onBack)
+  useEffect(() => {
+    onBackRef.current = onBack
+  }, [onBack])
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      // If we're legitimately calling our own navigation, allow it
+      if (isSaving.current) {
+        return
+      }
+      // Prevent default UI navigation
+      e.preventDefault()
+      
+      // Use a slight delay to avoid conflicts with React Navigation's native transition lock.
+      // Calling router.navigate immediately after preventDefault() inside a swipe gesture often gets ignored.
+      setTimeout(() => {
+        onBackRef.current()
+      }, 50)
+    })
+    return unsubscribe
+  }, [navigation])
 
   /**This function handles the shield icon press event (show the private text to save the note as private).*/
   const onShieldPress = (): void => showPrivateText ? setShowPrivateText(false) : setShowPrivateText(true)

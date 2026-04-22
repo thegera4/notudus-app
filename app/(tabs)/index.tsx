@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
-import { FlatList, StyleSheet, Alert } from 'react-native'
+import { FlatList, StyleSheet, Alert, AppState, AppStateStatus } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ListNoteItem from '@/components/notes/ListNoteItem'
 import TopBar from '@/components/shared/TopBar'
@@ -32,6 +32,16 @@ export default function NotesScreen() {
   const flatListRef = useRef<FlatList<NoteModelType>>(null)
 
   const filteredNotes = useMemo(() => Note.getNotes(auth), [auth])
+
+  /** Adds a listener to the AppState to check if the app is in the background. If it is, it sets the authentication to false.*/
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'background') {
+        setAuth(false)
+      }
+    })
+    return () => subscription.remove()
+  }, [])
 
   /** This function opens the search overlay when the search icon is pressed.*/
   const handleSearchPress = (): void => setIsSearchVisible(true)

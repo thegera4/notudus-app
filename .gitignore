@@ -29,3 +29,7 @@ notudus-app-94d7a90068e8.json
 key0_certificate.pem
 androidKey.jks
 private_key.pepk
+
+# tests
+coverage/
+

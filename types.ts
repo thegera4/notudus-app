@@ -29,7 +29,8 @@ export type TopBarProps = {
     currentNote?: NoteModelType,
     onShieldPress?: () => void,
     newNoteLocked?: boolean,
-    tasks?: Todo[]
+    tasks?: Todo[],
+    onClearChat?: () => void,
 }
 
 /**Props received by the TopBarIcon component.*/
@@ -103,4 +104,34 @@ export interface BottomSheetContextProps {
 /**Type for the BottomSheetProviderProps.*/
 export interface BottomSheetProviderProps {
     children: React.ReactNode;
+}
+
+/**Type for a chat message in the Assistant.*/
+export interface ChatMessage {
+    id: string;
+    role: 'user' | 'assistant';
+    content: string;
+    timestamp: string;
+}
+
+/**Status of the local model on the device.*/
+export type ModelStatus = 'checking' | 'not_downloaded' | 'downloading' | 'ready' | 'error';
+
+/**Props for the ChatBubble component.*/
+export interface ChatBubbleProps {
+    message: ChatMessage;
+}
+
+/**Props for the VoiceButton component.*/
+export interface VoiceButtonProps {
+    onTranscript: (text: string) => void;
+    disabled?: boolean;
+}
+
+/**Props for the ModelDownloader component.*/
+export interface ModelDownloaderProps {
+    progress: number;
+    status: ModelStatus;
+    onStartDownload: () => void;
+    errorMessage?: string;
 }

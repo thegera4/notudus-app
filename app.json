@@ -23,7 +23,8 @@
       },
       "permissions": [
         "android.permission.USE_BIOMETRIC",
-        "android.permission.USE_FINGERPRINT"
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.RECORD_AUDIO"
       ],
       "package": "com.jgmedellin.notudusapp"
     },
@@ -38,6 +39,14 @@
         "expo-local-authentication",
         {
           "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
+        }
+      ],
+      "llama.rn",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Notudus necesita acceso al micrófono para que puedas dictar preguntas a tus notas.",
+          "speechRecognitionPermission": "Notudus necesita reconocimiento de voz local para transcribir tus preguntas."
         }
       ]
     ],

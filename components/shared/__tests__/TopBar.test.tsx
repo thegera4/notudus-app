@@ -184,4 +184,32 @@ describe('components/shared/TopBar', () => {
     expect(Note.deleteNote).toHaveBeenCalledWith('n1')
     expect(router.navigate).toHaveBeenCalledWith(homeRoute)
   })
+
+  it('renders the clear chat icon for Assistant screen and fires onClearChat', () => {
+    const onClearChat = jest.fn()
+    const tree = renderTree(
+      <TopBar
+        screen={ScreenEnum.Assistant}
+        auth={false}
+        view="assistant"
+        onClearChat={onClearChat}
+      />,
+    )
+    expect(hasText(tree, 'Assistant')).toBe(true)
+    const clearBtn = findPressables(tree)[0]
+    press(clearBtn)
+    expect(onClearChat).toHaveBeenCalledTimes(1)
+  })
+
+  it('renders Assistant screen without clear button when onClearChat is not provided', () => {
+    const tree = renderTree(
+      <TopBar
+        screen={ScreenEnum.Assistant}
+        auth={false}
+        view="assistant"
+      />,
+    )
+    expect(hasText(tree, 'Assistant')).toBe(true)
+    expect(findPressables(tree).length).toBe(0)
+  })
 })

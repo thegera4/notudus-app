@@ -51,6 +51,7 @@ export default function TopBar({ screen, onLockPress, auth, onViewPress, view, o
       { screen === ScreenEnum.Todos && <Text style={styles.tasks}>{pendingTasks.length} pending tasks</Text> }
       { screen === ScreenEnum.Assistant &&
         <View style={styles.assistantIcons}>
+          {onLockPress && <TopBarIcon onPress={onLockPress} iconName={auth ? 'lock-open' : 'lock-closed'} size={24} color="white" />}
           {onClearChat && <TopBarIcon onPress={onClearChat} iconName="trash-outline" size={24} color="white" />}
         </View>
       }
@@ -86,6 +87,9 @@ const getStyles = (screen: string) => StyleSheet.create({
     paddingRight: 16,
   },
   assistantIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 18,
     paddingRight: 16,
   },
 })

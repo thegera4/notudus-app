@@ -8,7 +8,11 @@ jest.mock('expo-router', () => {
   const React = require('react')
   const Stack = jest.fn(({ children }: any) => React.createElement(React.Fragment, null, children))
   ;(Stack as any).Screen = () => null
-  return { Stack }
+  return {
+    Stack,
+    DarkTheme: {},
+    ThemeProvider: ({ children }: any) => children,
+  }
 })
 jest.mock('@/contexts/authContext', () => ({
   AuthProvider: ({ children }: any) => children,

@@ -8,16 +8,22 @@ import {
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Strings } from '@/constants/Strings'
-import { ModelDownloaderProps } from '@/types'
+import { AIConstants } from '@/constants/AI'
+import { AIModelId, ModelDownloaderProps } from '@/types'
 
 export default function ModelDownloader({
   progress,
   status,
   onStartDownload,
   errorMessage,
+  selectedModel = 'light',
+  onSelectModel,
 }: ModelDownloaderProps) {
   const isDownloading = status === 'downloading'
   const isError = status === 'error'
+  const activeConfig = AIConstants.MODELS[selectedModel] || AIConstants.MODELS.light
+
+  const modelOptions: AIModelId[] = ['light', 'advanced']
 
   return (
     <View style={styles.container}>
@@ -29,6 +35,47 @@ export default function ModelDownloader({
         <Text style={styles.title}>{Strings.ASSISTANT.MODEL_TITLE}</Text>
         <Text style={styles.description}>{Strings.ASSISTANT.MODEL_DESC}</Text>
 
+        {/* Model Selector (Ligero vs Avanzado) */}
+        <View style={styles.selectorContainer}>
+          <Text style={styles.selectorHeader}>Selecciona el modelo a utilizar:</Text>
+          <View style={styles.selectorRow}>
+            {modelOptions.map((modelId) => {
+              const cfg = AIConstants.MODELS[modelId]
+              const isSelected = selectedModel === modelId
+              return (
+                <TouchableOpacity
+                  key={modelId}
+                  style={[
+                    styles.modelOptionCard,
+                    isSelected && styles.modelOptionCardSelected,
+                  ]}
+                  activeOpacity={0.8}
+                  disabled={isDownloading}
+                  onPress={() => onSelectModel && onSelectModel(modelId)}
+                >
+                  <View style={styles.modelOptionHeader}>
+                    <Ionicons
+                      name={isSelected ? 'radio-button-on' : 'radio-button-off'}
+                      size={18}
+                      color={isSelected ? '#66bb6a' : '#888888'}
+                    />
+                    <Text
+                      style={[
+                        styles.modelOptionTitle,
+                        isSelected && styles.modelOptionTitleSelected,
+                      ]}
+                    >
+                      {modelId === 'light' ? 'Ligero (1.5B)' : 'Avanzado (3B)'}
+                    </Text>
+                  </View>
+                  <Text style={styles.modelOptionBadge}>{cfg.badge}</Text>
+                  <Text style={styles.modelOptionDesc}>{cfg.description}</Text>
+                </TouchableOpacity>
+              )
+            })}
+          </View>
+        </View>
+
         <View style={styles.specsContainer}>
           <View style={styles.specRow}>
             <Ionicons name="shield-checkmark" size={18} color="#66bb6a" />
@@ -36,11 +83,13 @@ export default function ModelDownloader({
           </View>
           <View style={styles.specRow}>
             <Ionicons name="calculator-outline" size={18} color="#66bb6a" />
-            <Text style={styles.specText}>Capaz de sumar deudas y extraer credenciales</Text>
+            <Text style={styles.specText}>Suma préstamos, resta abonos y extrae claves</Text>
           </View>
           <View style={styles.specRow}>
             <Ionicons name="cloud-download-outline" size={18} color="#66bb6a" />
-            <Text style={styles.specText}>Descarga única (~950 MB)</Text>
+            <Text style={styles.specText}>
+              Descarga única ({activeConfig.name} • {activeConfig.badge.split('•')[0].trim()})
+            </Text>
           </View>
         </View>
 
@@ -74,7 +123,11 @@ export default function ModelDownloader({
           >
             <Ionicons name="download" size={20} color="#ffffff" style={styles.btnIcon} />
             <Text style={styles.downloadButtonText}>
-              {isError ? Strings.ASSISTANT.RETRY : Strings.ASSISTANT.DOWNLOAD_BTN}
+              {isError
+                ? Strings.ASSISTANT.RETRY
+                : selectedModel === 'advanced'
+                ? Strings.ASSISTANT.DOWNLOAD_ADVANCED_BTN
+                : Strings.ASSISTANT.DOWNLOAD_BTN}
             </Text>
           </TouchableOpacity>
         )}
@@ -95,40 +148,91 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#1f1f1f',
     borderRadius: 16,
-    padding: 24,
+    padding: 22,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#303030',
   },
   iconCircle: {
-    width: 76,
-    height: 76,
-    borderRadius: 38,
+    width: 68,
+    height: 68,
+    borderRadius: 34,
     backgroundColor: 'rgba(102, 187, 106, 0.12)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   title: {
     color: '#ffffff',
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   description: {
     color: '#b0b0b0',
-    fontSize: 14,
+    fontSize: 13,
     textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 20,
+    lineHeight: 19,
+    marginBottom: 16,
+  },
+  selectorContainer: {
+    width: '100%',
+    marginBottom: 16,
+  },
+  selectorHeader: {
+    color: '#e0e0e0',
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  selectorRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  modelOptionCard: {
+    flex: 1,
+    backgroundColor: '#141414',
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#2c2c2c',
+  },
+  modelOptionCardSelected: {
+    borderColor: '#66bb6a',
+    backgroundColor: 'rgba(102, 187, 106, 0.08)',
+  },
+  modelOptionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  modelOptionTitle: {
+    color: '#cccccc',
+    fontSize: 13,
+    fontWeight: 'bold',
+    marginLeft: 6,
+  },
+  modelOptionTitleSelected: {
+    color: '#ffffff',
+  },
+  modelOptionBadge: {
+    color: '#66bb6a',
+    fontSize: 11,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  modelOptionDesc: {
+    color: '#9e9e9e',
+    fontSize: 11,
+    lineHeight: 15,
   },
   specsContainer: {
     width: '100%',
     backgroundColor: '#141414',
     borderRadius: 10,
-    padding: 14,
-    marginBottom: 20,
+    padding: 12,
+    marginBottom: 18,
   },
   specRow: {
     flexDirection: 'row',
@@ -137,7 +241,7 @@ const styles = StyleSheet.create({
   },
   specText: {
     color: '#e0e0e0',
-    fontSize: 13,
+    fontSize: 12,
     marginLeft: 10,
     flex: 1,
   },
@@ -204,7 +308,7 @@ const styles = StyleSheet.create({
   },
   downloadButtonText: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
   },
 })

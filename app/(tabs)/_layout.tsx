@@ -26,6 +26,7 @@ export default function TabLayout() {
         screenOptions={{
           tabBarActiveTintColor: Colors.bottomNavigation.active,
           headerShown: false,
+          tabBarHideOnKeyboard: true,
           tabBarStyle: {
             backgroundColor: "black",
           }, 

@@ -1,97 +1,98 @@
-import * as FileSystem from 'expo-file-system'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AIConstants } from '@/constants/AI'
 
-const MODELS_DIR = `${FileSystem.documentDirectory}models/`
-const MODEL_PATH = `${MODELS_DIR}${AIConstants.MODEL_FILENAME}`
+export interface RemoteAIConfig {
+  baseURL?: string
+  model?: string
+  dailyLimit?: number
+}
 
-let downloadResumable: FileSystem.DownloadResumable | null = null
+let cachedRemoteConfig: RemoteAIConfig | null = null
 
-/**
- * Checks if the local GGUF model file exists on the device.
- */
-export const isModelDownloaded = async (): Promise<boolean> => {
+const isSecureHttpsUrl = (url?: string): boolean => {
+  if (!url || typeof url !== 'string') return false
   try {
-    const fileInfo = await FileSystem.getInfoAsync(MODEL_PATH)
-    return fileInfo.exists && !fileInfo.isDirectory && (fileInfo.size ?? 0) > 100 * 1024 * 1024
-  } catch (error) {
-    console.error('Error checking if model exists:', error)
-    return false
+    const parsed = new URL(url)
+    return parsed.protocol === 'https:'
+  } catch {
+    return url.startsWith('https://')
   }
 }
 
 /**
- * Returns the absolute local file URI for the model.
+ * Fetches dynamic model configuration from a remote HTTPS JSON endpoint
+ * so you can change models at any time without modifying app code or publishing a new Play Store build.
  */
-export const getModelPath = (): string => {
-  return MODEL_PATH
-}
-
-/**
- * Ensures the models directory exists.
- */
-const ensureDirectoryExists = async (): Promise<void> => {
-  const dirInfo = await FileSystem.getInfoAsync(MODELS_DIR)
-  if (!dirInfo.exists) {
-    await FileSystem.makeDirectoryAsync(MODELS_DIR, { intermediates: true })
-  }
-}
-
-/**
- * Downloads the Qwen 1.5B GGUF model with progress reporting.
- * @param onProgress Callback receiving progress percentage (0 to 100).
- */
-export const downloadModel = async (
-  onProgress: (percent: number, downloadedMb: number, totalMb: number) => void
-): Promise<string> => {
-  await ensureDirectoryExists()
-
-  const progressCallback: FileSystem.FileSystemNetworkTaskProgressCallback<FileSystem.DownloadProgressData> = (data) => {
-    const totalBytes = data.totalBytesExpectedToWrite > 0 ? data.totalBytesExpectedToWrite : AIConstants.MODEL_SIZE_MB * 1024 * 1024
-    const downloadedMb = Math.round((data.totalBytesWritten / (1024 * 1024)) * 10) / 10
-    const totalMb = Math.round((totalBytes / (1024 * 1024)) * 10) / 10
-    const percent = Math.min(100, Math.round((data.totalBytesWritten / totalBytes) * 100))
-    onProgress(percent, downloadedMb, totalMb)
-  }
-
-  downloadResumable = FileSystem.createDownloadResumable(
-    AIConstants.MODEL_DOWNLOAD_URL,
-    MODEL_PATH,
-    {},
-    progressCallback
-  )
-
-  const result = await downloadResumable.downloadAsync()
-  if (!result || !result.uri) {
-    throw new Error('Model download failed: missing result URI')
-  }
-
-  return result.uri
-}
-
-/**
- * Cancels the current download if one is in progress.
- */
-export const cancelDownload = async (): Promise<void> => {
-  if (downloadResumable) {
-    try {
-      await downloadResumable.pauseAsync()
-    } catch (e) {
-      console.warn('Could not pause download:', e)
-    }
-    downloadResumable = null
-  }
-}
-
-/**
- * Deletes the downloaded model file to free device storage.
- */
-export const deleteModel = async (): Promise<void> => {
+export const syncRemoteModelConfig = async (
+  configUrl: string = AIConstants.REMOTE_CONFIG_URL
+): Promise<RemoteAIConfig | null> => {
   try {
-    const fileInfo = await FileSystem.getInfoAsync(MODEL_PATH)
-    if (fileInfo.exists) {
-      await FileSystem.deleteAsync(MODEL_PATH, { idempotent: true })
+    const cachedRaw = await AsyncStorage.getItem(AIConstants.REMOTE_CONFIG_STORAGE_KEY)
+    if (cachedRaw) {
+      cachedRemoteConfig = JSON.parse(cachedRaw)
     }
-  } catch (error) {
-    console.error('Error deleting model:', error)
+  } catch (e) {
+    // Ignore storage read errors
+  }
+
+  if (!isSecureHttpsUrl(configUrl)) {
+    return cachedRemoteConfig
+  }
+
+  try {
+    const response = await fetch(configUrl, {
+      headers: { Accept: 'application/json', 'Cache-Control': 'no-cache' },
+    })
+    if (response.ok) {
+      const remoteData: RemoteAIConfig = await response.json()
+      cachedRemoteConfig = remoteData
+      await AsyncStorage.setItem(
+        AIConstants.REMOTE_CONFIG_STORAGE_KEY,
+        JSON.stringify(remoteData)
+      )
+      return remoteData
+    }
+  } catch (e) {
+    if (typeof __DEV__ !== 'undefined' && __DEV__) {
+      console.warn('Using cached or default AI model config (remote fetch skipped):', e)
+    }
+  }
+
+  return cachedRemoteConfig
+}
+
+/**
+ * Resolves the active Vercel AI SDK provider parameters (baseURL, apiKey, modelString, dailyLimit)
+ * combining validated remote config overrides with environment defaults.
+ */
+export const getActiveCloudModelParams = async (): Promise<{
+  baseURL: string
+  apiKey: string
+  modelString: string
+  dailyLimit: number
+}> => {
+  const remote = cachedRemoteConfig ?? (await syncRemoteModelConfig())
+
+  const baseURL =
+    remote?.baseURL && isSecureHttpsUrl(remote.baseURL)
+      ? remote.baseURL
+      : AIConstants.API_BASE_URL
+  const apiKey = AIConstants.API_KEY
+  const modelString =
+    typeof remote?.model === 'string' && /^[a-zA-Z0-9._/:+-]{2,120}$/.test(remote.model)
+      ? remote.model
+      : AIConstants.MODEL
+  const dailyLimit =
+    typeof remote?.dailyLimit === 'number' &&
+    remote.dailyLimit >= 1 &&
+    remote.dailyLimit <= 50
+      ? Math.floor(remote.dailyLimit)
+      : AIConstants.MAX_DAILY_MESSAGES
+
+  return {
+    baseURL,
+    apiKey,
+    modelString,
+    dailyLimit,
   }
 }

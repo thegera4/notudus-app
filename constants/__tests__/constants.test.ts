@@ -48,10 +48,10 @@ describe('constants/Routes', () => {
 })
 
 describe('constants/AI', () => {
-  it('exposes the local AI model constants', () => {
-    expect(AIConstants.MODEL_FILENAME).toBe('qwen2.5-1.5b-instruct-q4_k_m.gguf')
-    expect(AIConstants.MODEL_SIZE_MB).toBe(986)
-    expect(AIConstants.CONTEXT_WINDOW).toBe(2048)
+  it('exposes the Vercel AI Gateway constants', () => {
+    expect(AIConstants.MAX_DAILY_MESSAGES).toBe(10)
+    expect(AIConstants.API_BASE_URL).toContain('http')
+    expect(AIConstants.MODEL).toBeTruthy()
     expect(AIConstants.SYSTEM_PROMPT).toContain('Notudus')
   })
 })
@@ -107,7 +107,8 @@ describe('constants/Strings', () => {
   it('exposes assistant strings', () => {
     expect(Strings.ASSISTANT.TAB_TITLE).toBe('Assistant')
     expect(Strings.ASSISTANT.TITLE).toBe('Assistant')
-    expect(Strings.ASSISTANT.WELCOME).toContain('asistente')
+    expect(Strings.ASSISTANT.WELCOME).toContain('assistant')
+    expect(Strings.ASSISTANT.INPUT_PLACEHOLDER).toBe('Ask a question...')
     expect(Strings.ASSISTANT.MODEL_TITLE).toBe('Asistente IA Local (100% Offline)')
   })
 })

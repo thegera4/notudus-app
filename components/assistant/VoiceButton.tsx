@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { TouchableOpacity, StyleSheet, Animated, Alert } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { useSpeechRecognitionEvent } from 'expo-speech-recognition'
 import {
   startOfflineListening,
   stopOfflineListening,
   requestVoicePermissions,
+  isNativeSpeechModuleAvailable,
+  useSafeSpeechRecognitionEvent,
 } from '@/services/offlineVoiceService'
 import { VoiceButtonProps } from '@/types'
 import { Strings } from '@/constants/Strings'
 
-export default function VoiceButton({ onTranscript, disabled }: VoiceButtonProps) {
+export default function VoiceButton({
+  onTranscript,
+  onListeningStart,
+  disabled,
+}: VoiceButtonProps) {
   const [isListening, setIsListening] = useState(false)
   const pulseAnim = useRef(new Animated.Value(1)).current
 
@@ -41,24 +46,32 @@ export default function VoiceButton({ onTranscript, disabled }: VoiceButtonProps
     }
   }, [isListening])
 
-  useSpeechRecognitionEvent('result', (event) => {
+  useSafeSpeechRecognitionEvent('result', (event) => {
     const transcript = event.results?.[0]?.transcript
     if (transcript) {
-      onTranscript(transcript)
+      onTranscript(transcript, Boolean(event.isFinal))
     }
   })
 
-  useSpeechRecognitionEvent('end', () => {
+  useSafeSpeechRecognitionEvent('end', () => {
     setIsListening(false)
   })
 
-  useSpeechRecognitionEvent('error', (event) => {
+  useSafeSpeechRecognitionEvent('error', (event) => {
     setIsListening(false)
     console.warn('Speech recognition event error:', event.error)
   })
 
   const handlePress = async () => {
     if (disabled) return
+
+    if (!isNativeSpeechModuleAvailable()) {
+      Alert.alert(
+        'Modo Expo Go',
+        'El reconocimiento de voz nativo requiere una compilación dedicada. En Expo Go puedes usar el micrófono del teclado de tu teléfono.'
+      )
+      return
+    }
 
     if (isListening) {
       stopOfflineListening()
@@ -71,6 +84,9 @@ export default function VoiceButton({ onTranscript, disabled }: VoiceButtonProps
       }
 
       try {
+        if (onListeningStart) {
+          onListeningStart()
+        }
         startOfflineListening('es-MX')
         setIsListening(true)
       } catch (error) {
@@ -111,14 +127,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#383838',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
   },
   containerListening: {
-    backgroundColor: 'rgba(239, 83, 80, 0.25)',
+    backgroundColor: 'rgba(239, 83, 80, 0.18)',
   },
 })

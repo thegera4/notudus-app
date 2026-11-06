@@ -106,12 +106,34 @@ export interface BottomSheetProviderProps {
     children: React.ReactNode;
 }
 
+/**Identifier for local AI models (lightweight vs advanced).*/
+export type AIModelId = 'light' | 'advanced';
+
+/**Configuration metadata for a downloadable GGUF local model.*/
+export interface AIModelConfig {
+    id: AIModelId;
+    name: string;
+    badge: string;
+    description: string;
+    filename: string;
+    downloadUrl: string;
+    sizeMb: number;
+}
+
+/**Source note summary attached to an assistant response.*/
+export interface SourceNoteRef {
+    id: string;
+    title: string;
+    locked: number;
+}
+
 /**Type for a chat message in the Assistant.*/
 export interface ChatMessage {
     id: string;
     role: 'user' | 'assistant';
     content: string;
     timestamp: string;
+    sourceNotes?: SourceNoteRef[];
 }
 
 /**Status of the local model on the device.*/
@@ -120,11 +142,13 @@ export type ModelStatus = 'checking' | 'not_downloaded' | 'downloading' | 'ready
 /**Props for the ChatBubble component.*/
 export interface ChatBubbleProps {
     message: ChatMessage;
+    onNotePress?: (noteId: string) => void;
 }
 
 /**Props for the VoiceButton component.*/
 export interface VoiceButtonProps {
-    onTranscript: (text: string) => void;
+    onTranscript: (text: string, isFinal?: boolean) => void;
+    onListeningStart?: () => void;
     disabled?: boolean;
 }
 
@@ -134,4 +158,6 @@ export interface ModelDownloaderProps {
     status: ModelStatus;
     onStartDownload: () => void;
     errorMessage?: string;
+    selectedModel?: AIModelId;
+    onSelectModel?: (modelId: AIModelId) => void;
 }

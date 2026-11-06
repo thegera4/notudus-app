@@ -17,9 +17,8 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.7 },
   fab: {
     position: 'absolute',
-    bottom: 30,
-    left: '50%',
-    marginLeft: -28,
+    bottom: 90,
+    right: 20,
     backgroundColor: 'green',
     borderRadius: 28,
     width: 56,

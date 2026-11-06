@@ -4,7 +4,7 @@ import ModelDownloader from '@/components/assistant/ModelDownloader'
 import { Strings } from '@/constants/Strings'
 
 describe('components/assistant/ModelDownloader', () => {
-  it('renders initial state with download button and specs', () => {
+  it('renders initial state with download button, model selector, and specs', () => {
     const onStartDownload = jest.fn()
     const tree = renderTree(
       <ModelDownloader
@@ -15,10 +15,25 @@ describe('components/assistant/ModelDownloader', () => {
     )
 
     expect(hasText(tree, Strings.ASSISTANT.MODEL_TITLE)).toBe(true)
+    expect(hasText(tree, 'Ligero (1.5B)')).toBe(true)
+    expect(hasText(tree, 'Avanzado (3B)')).toBe(true)
     expect(hasText(tree, Strings.ASSISTANT.DOWNLOAD_BTN)).toBe(true)
 
     press(lastPressable(tree))
     expect(onStartDownload).toHaveBeenCalledTimes(1)
+  })
+
+  it('renders advanced download label when selectedModel is advanced', () => {
+    const tree = renderTree(
+      <ModelDownloader
+        progress={0}
+        status="not_downloaded"
+        selectedModel="advanced"
+        onStartDownload={jest.fn()}
+      />
+    )
+
+    expect(hasText(tree, Strings.ASSISTANT.DOWNLOAD_ADVANCED_BTN)).toBe(true)
   })
 
   it('renders downloading state with progress percentage', () => {

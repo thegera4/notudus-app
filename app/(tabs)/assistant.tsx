@@ -29,10 +29,7 @@ import { addNoteRoute } from '@/constants/Routes'
 import { ChatMessage, NoteModelType } from '@/types'
 import { useAuth } from '@/hooks/useAuth'
 import Note from '@/models/Note'
-import {
-  syncRemoteModelConfig,
-  getActiveCloudModelParams,
-} from '@/services/modelManagerService'
+import { getActiveCloudModelParams } from '@/services/modelManagerService'
 import {
   queryLocalModel,
   selectRelevantNotes,
@@ -43,9 +40,6 @@ import {
   resetDailyUsage,
   DailyUsageState,
 } from '@/services/usageLimitService'
-
-const DEV_RESET_TOKEN_KEY = 'notudus_ai_dev_reset_token'
-const CURRENT_DEV_RESET_TOKEN = 'reset-2026-11-05-1939'
 
 const buildWelcomeContent = (usage?: DailyUsageState): string => {
   const limit = usage?.limit ?? AIConstants.MAX_DAILY_MESSAGES
@@ -94,24 +88,10 @@ export default function AssistantScreen() {
 
   const initAssistant = async () => {
     try {
-      if (typeof syncRemoteModelConfig === 'function') {
-        await syncRemoteModelConfig()
-      }
-
       let limit = AIConstants.MAX_DAILY_MESSAGES
       if (typeof getActiveCloudModelParams === 'function') {
         const params = await getActiveCloudModelParams()
         limit = params.dailyLimit
-      }
-
-      if (__DEV__ && typeof resetDailyUsage === 'function') {
-        const AsyncStorage =
-          require('@react-native-async-storage/async-storage').default
-        const appliedToken = await AsyncStorage.getItem(DEV_RESET_TOKEN_KEY)
-        if (appliedToken !== CURRENT_DEV_RESET_TOKEN) {
-          await resetDailyUsage(limit)
-          await AsyncStorage.setItem(DEV_RESET_TOKEN_KEY, CURRENT_DEV_RESET_TOKEN)
-        }
       }
 
       if (typeof getDailyUsage === 'function') {

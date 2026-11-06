@@ -7,7 +7,6 @@ jest.mock('@/components/notes/ListNoteItem', () => {
 })
 
 import { act } from 'react'
-import { InteractionManager } from 'react-native'
 import { renderTree, findPressables, press } from '@/test-utils'
 import SearchOverlay from '@/components/notes/SearchOverlay'
 import { NoteModelType } from '@/types'
@@ -30,18 +29,6 @@ function findFlatList(tree: any) {
 }
 
 describe('components/notes/SearchOverlay', () => {
-  let runAfterSpy: jest.SpyInstance
-
-  beforeEach(() => {
-    runAfterSpy = jest
-      .spyOn(InteractionManager, 'runAfterInteractions')
-      .mockImplementation((cb: any) => cb())
-  })
-
-  afterEach(() => {
-    runAfterSpy.mockRestore()
-  })
-
   const defaultProps = {
     visible: true,
     notes,
@@ -71,13 +58,15 @@ describe('components/notes/SearchOverlay', () => {
   })
 
   it('focuses the input after the modal onShow callback', () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout')
     const tree = renderTree(<SearchOverlay {...defaultProps} searchTerm="" />)
     const modal = tree.root.findAll(
       (n: any) => n.props && typeof n.props.onShow === 'function',
     )[0]
     act(() => modal.props.onShow())
     act(() => jest.advanceTimersByTime(600))
-    expect(runAfterSpy).toHaveBeenCalled()
+    expect(setTimeoutSpy).toHaveBeenCalled()
+    setTimeoutSpy.mockRestore()
   })
 
   it('calls onClose when the close button or the overlay is pressed', () => {

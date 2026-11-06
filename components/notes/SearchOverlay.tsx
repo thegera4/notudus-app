@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { View, TextInput, FlatList, StyleSheet, Modal, TouchableOpacity, TouchableWithoutFeedback, Text, KeyboardAvoidingView, InteractionManager } from 'react-native'
+import { View, TextInput, FlatList, StyleSheet, Modal, TouchableOpacity, TouchableWithoutFeedback, Text, KeyboardAvoidingView } from 'react-native'
 import ListNoteItem from '@/components/notes/ListNoteItem'
 import { NoteModelType, SearchOverlayProps } from '@/types'
 import { Colors } from '@/constants/Colors'
@@ -30,9 +30,7 @@ export default function SearchOverlay({ visible, notes, onClose, searchTerm, set
       transparent={true}
       animationType="none"
       onShow={() => {
-        InteractionManager.runAfterInteractions(() => {
-          setTimeout(() => { inputRef.current?.focus() }, 600)
-        })
+        setTimeout(() => { inputRef.current?.focus() }, 600)
       }}
     >
       <KeyboardAvoidingView style={styles.overlay} behavior="padding">

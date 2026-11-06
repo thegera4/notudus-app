@@ -25,10 +25,6 @@ jest.mock('react-native-gesture-handler', () => ({
 }))
 jest.mock('react-native-reanimated', () => ({}))
 jest.mock('react-native-get-random-values', () => ({}))
-jest.mock('@react-navigation/native', () => ({
-  DarkTheme: {},
-  ThemeProvider: ({ children }: any) => children,
-}))
 
 import { act } from 'react'
 import { renderTree } from '@/test-utils'

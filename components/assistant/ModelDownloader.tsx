@@ -8,8 +8,23 @@ import {
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Strings } from '@/constants/Strings'
-import { AIConstants } from '@/constants/AI'
 import { AIModelId, ModelDownloaderProps } from '@/types'
+
+const LEGACY_MODELS: Record<
+  AIModelId,
+  { name: string; badge: string; description: string }
+> = {
+  light: {
+    name: 'Qwen 2.5 (1.5B)',
+    badge: '~950 MB • Rápido y ligero',
+    description: 'Ideal para consultas rápidas con menor uso de batería y RAM.',
+  },
+  advanced: {
+    name: 'Qwen 2.5 (3B)',
+    badge: '~1.93 GB • Mayor precisión',
+    description: 'Mejor razonamiento en cuentas complejas y notas extensas.',
+  },
+}
 
 export default function ModelDownloader({
   progress,
@@ -21,7 +36,7 @@ export default function ModelDownloader({
 }: ModelDownloaderProps) {
   const isDownloading = status === 'downloading'
   const isError = status === 'error'
-  const activeConfig = AIConstants.MODELS[selectedModel] || AIConstants.MODELS.light
+  const activeConfig = LEGACY_MODELS[selectedModel] || LEGACY_MODELS.light
 
   const modelOptions: AIModelId[] = ['light', 'advanced']
 
@@ -40,7 +55,7 @@ export default function ModelDownloader({
           <Text style={styles.selectorHeader}>Selecciona el modelo a utilizar:</Text>
           <View style={styles.selectorRow}>
             {modelOptions.map((modelId) => {
-              const cfg = AIConstants.MODELS[modelId]
+              const cfg = LEGACY_MODELS[modelId]
               const isSelected = selectedModel === modelId
               return (
                 <TouchableOpacity

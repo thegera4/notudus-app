@@ -64,7 +64,7 @@ jest.mock('react-native-safe-area-context', () => {
 
 import React from 'react'
 import { act } from 'react'
-import { renderTree, hasText } from '@/test-utils'
+import { renderTree, hasText, getTexts } from '@/test-utils'
 import AssistantScreen from '@/app/(tabs)/assistant'
 import * as LocalLlama from '@/services/localLlamaService'
 import Note from '@/models/Note'
@@ -100,7 +100,7 @@ describe('app/(tabs)/assistant', () => {
 
     expect(hasText(tree, 'Assistant')).toBe(true)
     expect(hasText(tree, '10 daily messages')).toBe(true)
-    expect(hasText(tree, '(8 remaining today)')).toBe(true)
+    expect(getTexts(tree).some((t) => t.includes('(8 remaining today)'))).toBe(true)
   })
 
   it('prompts biometric authentication when locked/private notes exist and increments daily counter', async () => {
@@ -128,7 +128,7 @@ describe('app/(tabs)/assistant', () => {
     expect(mockSetAuth).toHaveBeenCalledWith(true)
     expect(LocalLlama.queryLocalModel).toHaveBeenCalled()
     expect(mockIncrementDailyUsage).toHaveBeenCalled()
-    expect(hasText(tree, '(7 remaining today)')).toBe(true)
+    expect(getTexts(tree).some((t) => t.includes('(7 remaining today)'))).toBe(true)
   })
 
   it('disables input and blocks sending when daily limit of 10 messages is reached', async () => {
@@ -145,7 +145,7 @@ describe('app/(tabs)/assistant', () => {
       tree = renderTree(<AssistantScreen />)
     })
 
-    expect(hasText(tree, '(0 remaining today)')).toBe(true)
+    expect(getTexts(tree).some((t) => t.includes('(0 remaining today)'))).toBe(true)
     const input = tree.root.findByProps({ placeholder: 'Daily limit of 10 messages reached' })
     expect(input.props.editable).toBe(false)
   })

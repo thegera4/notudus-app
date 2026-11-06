@@ -17,6 +17,8 @@ jest.mock('@/services/offlineVoiceService', () => ({
   startOfflineListening: jest.fn(),
   stopOfflineListening: jest.fn(),
   requestVoicePermissions: jest.fn().mockResolvedValue(true),
+  useSafeSpeechRecognitionEvent: jest.fn(),
+  isNativeSpeechModuleAvailable: jest.fn().mockReturnValue(true),
 }))
 
 describe('components/assistant/VoiceButton', () => {

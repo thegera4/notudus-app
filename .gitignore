@@ -33,3 +33,11 @@ private_key.pepk
 # tests
 coverage/
 
+# Native build folders (generated via CNG / EAS Build)
+/android
+/ios
+.idea/
+.agents/
+skills-lock.json
+
+

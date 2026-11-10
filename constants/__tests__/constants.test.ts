@@ -1,7 +1,8 @@
 import { Colors } from '@/constants/Colors'
 import { ScreenEnum } from '@/constants/Enums'
-import { homeRoute, addNoteRoute } from '@/constants/Routes'
+import { homeRoute, addNoteRoute, assistantRoute } from '@/constants/Routes'
 import { Strings } from '@/constants/Strings'
+import { AIConstants } from '@/constants/AI'
 
 describe('constants/Colors', () => {
   it('exposes light and dark theme colors', () => {
@@ -34,6 +35,7 @@ describe('constants/Enums', () => {
     expect(ScreenEnum.Notes).toBe('Notes')
     expect(ScreenEnum.Todos).toBe('Todos')
     expect(ScreenEnum.AddNote).toBe('Add Note')
+    expect(ScreenEnum.Assistant).toBe('Assistant')
   })
 })
 
@@ -41,6 +43,16 @@ describe('constants/Routes', () => {
   it('exposes the route paths', () => {
     expect(homeRoute).toBe('/')
     expect(addNoteRoute).toBe('/addNote')
+    expect(assistantRoute).toBe('/assistant')
+  })
+})
+
+describe('constants/AI', () => {
+  it('exposes the Vercel AI Gateway constants', () => {
+    expect(AIConstants.MAX_DAILY_MESSAGES).toBe(10)
+    expect(AIConstants.API_BASE_URL).toContain('http')
+    expect(AIConstants.MODEL).toBeTruthy()
+    expect(AIConstants.SYSTEM_PROMPT).toContain('Notudus')
   })
 })
 
@@ -90,5 +102,13 @@ describe('constants/Strings', () => {
     expect(Strings.ERRORS.INSERT).toBe('Error while inserting data: ')
     expect(Strings.ERRORS.UPDATE).toBe('Error while updating data: ')
     expect(Strings.ERRORS.DELETE).toBe('Error while deleting data: ')
+  })
+
+  it('exposes assistant strings', () => {
+    expect(Strings.ASSISTANT.TAB_TITLE).toBe('Assistant')
+    expect(Strings.ASSISTANT.TITLE).toBe('Assistant')
+    expect(Strings.ASSISTANT.WELCOME).toContain('assistant')
+    expect(Strings.ASSISTANT.INPUT_PLACEHOLDER).toBe('Ask a question...')
+    expect(Strings.ASSISTANT.MODEL_TITLE).toBe('Asistente IA Local (100% Offline)')
   })
 })

@@ -3,4 +3,5 @@ export const ScreenEnum = {
     Notes: 'Notes',
     Todos: 'Todos',
     AddNote: 'Add Note',
+    Assistant: 'Assistant',
 }

@@ -68,13 +68,23 @@ describe('app/(tabs)/_layout', () => {
     const screenCalls = (TabsMock as any).Screen.mock.calls
     const indexOptions = screenCalls[0][0].options
     const todosOptions = screenCalls[1][0].options
+    const assistantOptions = screenCalls[2][0].options
 
     indexOptions.tabBarIcon({ color: 'green', focused: true })
     indexOptions.tabBarIcon({ color: 'green', focused: false })
     todosOptions.tabBarIcon({ color: 'green', focused: true })
     todosOptions.tabBarIcon({ color: 'green', focused: false })
+    assistantOptions.tabBarIcon({ color: 'green', focused: true })
+    assistantOptions.tabBarIcon({ color: 'green', focused: false })
 
     expect(indexOptions.title).toBe('Notes')
     expect(todosOptions.title).toBe('Todos')
+    expect(assistantOptions.title).toBe('Assistant')
+  })
+
+  it('does not render the FAB on the Assistant tab', () => {
+    ;(usePathname as jest.Mock).mockReturnValue('/assistant')
+    renderTree(require('@/app/(tabs)/_layout').default())
+    expect(FABMock).not.toHaveBeenCalled()
   })
 })

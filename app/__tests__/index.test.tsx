@@ -1,8 +1,10 @@
 jest.mock('@/hooks/useAuth', () => ({ __esModule: true, useAuth: jest.fn() }))
-jest.mock('expo-router', () => ({ router: { push: jest.fn(), navigate: jest.fn() } }))
-jest.mock('@react-navigation/native', () => {
+jest.mock('expo-router', () => {
   const React = require('react')
-  return { useFocusEffect: (cb: any) => React.useEffect(() => { cb(); return () => {} }, [cb]) }
+  return {
+    router: { push: jest.fn(), navigate: jest.fn() },
+    useFocusEffect: (cb: any) => React.useEffect(() => { cb(); return () => {} }, [cb]),
+  }
 })
 jest.mock('@/models/Note', () => ({
   __esModule: true,

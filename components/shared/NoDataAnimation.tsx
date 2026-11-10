@@ -1,7 +1,7 @@
 import { useEffect, useRef }from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import LottieView from 'lottie-react-native'
-import * as emptyAnimation from '@/assets/animations/empty.json'
+import emptyAnimation from '@/assets/animations/empty.json'
 import { NoDataAnimationProps } from '@/types';
 
 export default function NoDataAnimation ({ screen }: NoDataAnimationProps) {

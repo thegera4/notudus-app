@@ -11,7 +11,7 @@ import Note from '@/models/Note'
 
 /**This is the App Bar component, which shows different options and icons, depending on the screen (notes,todos or add note).*/
 export default function TopBar({ screen, onLockPress, auth, onViewPress, view, onSearchPress, onBackPress,
-  currentNote, onShieldPress, newNoteLocked, tasks }: TopBarProps) {
+  currentNote, onShieldPress, newNoteLocked, tasks, onClearChat }: TopBarProps) {
 
   const styles = getStyles(screen)
 
@@ -49,6 +49,12 @@ export default function TopBar({ screen, onLockPress, auth, onViewPress, view, o
         <View style={styles.notesIcons}><TopBarIcon onPress={onDeletePress} iconName='trash' size={24} color="white"/></View>
       }
       { screen === ScreenEnum.Todos && <Text style={styles.tasks}>{pendingTasks.length} pending tasks</Text> }
+      { screen === ScreenEnum.Assistant &&
+        <View style={styles.assistantIcons}>
+          {onLockPress && <TopBarIcon onPress={onLockPress} iconName={auth ? 'lock-open' : 'lock-closed'} size={24} color="white" />}
+          {onClearChat && <TopBarIcon onPress={onClearChat} iconName="trash-outline" size={24} color="white" />}
+        </View>
+      }
       { openDeleteModal && 
         <CustomModal
           title={Strings.MODALS.DELETE_NOTE}
@@ -78,6 +84,12 @@ const getStyles = (screen: string) => StyleSheet.create({
     flexDirection: 'row',
     justifyContent: screen !== ScreenEnum.AddNote ? 'space-between' : 'flex-end',
     width: 130,
+    paddingRight: 16,
+  },
+  assistantIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 18,
     paddingRight: 16,
   },
 })

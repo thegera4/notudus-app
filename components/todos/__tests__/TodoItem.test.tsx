@@ -19,15 +19,14 @@ jest.mock('@/utils/animations', () => ({
 
 jest.mock('@/models/Todo', () => ({ __esModule: true, default: {} }))
 
-jest.mock('react-native-gesture-handler', () => {
-  const React = require('react')
+jest.mock('react-native-gesture-handler/ReanimatedSwipeable', () => {
   const Swipeable = jest.fn(({ children }: any) => children)
-  return { __esModule: true, Swipeable, GestureHandlerRootView: ({ children }: any) => React.createElement(React.Fragment, null, children) }
+  return { __esModule: true, default: Swipeable }
 })
 
 import { act } from 'react'
 import { renderTree, rerenderTree, findPressables, press, hasText } from '@/test-utils'
-import { Swipeable } from 'react-native-gesture-handler'
+import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable'
 import TodoItem from '@/components/todos/TodoItem'
 import { slideAnimation, animateListItem } from '@/utils/animations'
 import { Strings } from '@/constants/Strings'

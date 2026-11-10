@@ -26,6 +26,7 @@ export default function TabLayout() {
         screenOptions={{
           tabBarActiveTintColor: Colors.bottomNavigation.active,
           headerShown: false,
+          tabBarHideOnKeyboard: true,
           tabBarStyle: {
             backgroundColor: "black",
           }, 
@@ -48,8 +49,17 @@ export default function TabLayout() {
             ),
           }}
         />
+        <Tabs.Screen
+          name="assistant"
+          options={{
+            title: 'Assistant',
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={focused ? 'sparkles' : 'sparkles-outline'} color={color} />
+            ),
+          }}
+        />
       </Tabs>
-      <FAB onPress={getFabAction} />
+      {pathname !== '/assistant' && <FAB onPress={getFabAction} />}
     </View>
   );
 }

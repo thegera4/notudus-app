@@ -184,4 +184,47 @@ describe('components/shared/TopBar', () => {
     expect(Note.deleteNote).toHaveBeenCalledWith('n1')
     expect(router.navigate).toHaveBeenCalledWith(homeRoute)
   })
+
+  it('renders the lock and clear chat icons for Assistant screen and fires callbacks', () => {
+    const onLockPress = jest.fn()
+    const onClearChat = jest.fn()
+    const tree = renderTree(
+      <TopBar
+        screen={ScreenEnum.Assistant}
+        auth={true}
+        onLockPress={onLockPress}
+        view="assistant"
+        onClearChat={onClearChat}
+      />,
+    )
+    expect(hasText(tree, 'Assistant')).toBe(true)
+    const buttons = findPressables(tree)
+    press(buttons[0])
+    press(buttons[1])
+    expect(onLockPress).toHaveBeenCalledTimes(1)
+    expect(onClearChat).toHaveBeenCalledTimes(1)
+
+    const lockedTree = renderTree(
+      <TopBar
+        screen={ScreenEnum.Assistant}
+        auth={false}
+        onLockPress={onLockPress}
+        view="assistant"
+        onClearChat={onClearChat}
+      />,
+    )
+    expect(findPressables(lockedTree).length).toBe(2)
+  })
+
+  it('renders Assistant screen without clear button when onClearChat is not provided', () => {
+    const tree = renderTree(
+      <TopBar
+        screen={ScreenEnum.Assistant}
+        auth={false}
+        view="assistant"
+      />,
+    )
+    expect(hasText(tree, 'Assistant')).toBe(true)
+    expect(findPressables(tree).length).toBe(0)
+  })
 })

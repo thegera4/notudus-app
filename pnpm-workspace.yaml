@@ -24,6 +24,7 @@ overrides:
   'minimatch@>=7.0.0 <11.0.1': ^11.0.1
   # image-size: must remain on ^1.x because metro@0.83 passes file path strings to imageSize(), which v2+ dropped
   uuid: ^11.1.1
+  zod: ^4.6.7
 
 allowBuilds:
   '@parcel/watcher': false
@@ -31,10 +32,5 @@ allowBuilds:
 
 auditConfig:
   # GHSA-gcqx-w48m-w2h4: deepmerge <=4.3.1 (low, dev/test-only via jest-config): no patched version published upstream
-  # GHSA-866g-f22w-33x8 & GHSA-rwvc-j5jr-mgvh: @ai-sdk/provider-utils 3.0.28+ uses dynamic `import(id)` for Node.js modules, which breaks React Native Metro bundler; not applicable here since the app only sends text prompts
-  # GHSA-mrhx-c7xc-m3w5: zod v3 is required by ai@4.x (zod v4 changes internal APIs); app does not validate untrusted user-supplied schemas with constrained collections
   ignoreGhsas:
     - GHSA-gcqx-w48m-w2h4
-    - GHSA-866g-f22w-33x8
-    - GHSA-rwvc-j5jr-mgvh
-    - GHSA-mrhx-c7xc-m3w5

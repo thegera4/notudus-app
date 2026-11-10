@@ -501,21 +501,25 @@ ${sanitizedQuestion}
   const openaiProvider = createOpenAI({
     baseURL,
     apiKey: apiKey || 'missing-api-key',
-    compatibility: 'compatible',
   })
 
   try {
+    const model =
+      typeof openaiProvider.chat === 'function'
+        ? openaiProvider.chat(modelString)
+        : openaiProvider(modelString)
+
     const result = await generateText({
-      model: openaiProvider(modelString),
+      model,
       system: AIConstants.SYSTEM_PROMPT,
       prompt,
       temperature: 0.1,
-      maxTokens: 2048,
+      maxOutputTokens: 2048,
     })
 
     const durationMs = Date.now() - startTime
     const rawText = result.text || ''
-    const reasoningText = (result as any).reasoning || ''
+    const reasoningText = (result as any).reasoningText || (result as any).reasoning || ''
 
     if (typeof __DEV__ !== 'undefined' && __DEV__) {
       console.log('[AI API Response] Received:', {

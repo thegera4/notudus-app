@@ -1,7 +1,7 @@
 {
   "name": "notudus-app",
   "main": "expo-router/entry",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "packageManager": "pnpm@11.24.0",
   "scripts": {
     "start": "expo start",

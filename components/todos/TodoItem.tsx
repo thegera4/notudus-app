@@ -1,7 +1,7 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react'
 import { TodoItemProps } from '@/types'
 import { Text, StyleSheet, TouchableOpacity, Animated } from 'react-native'
-import { Swipeable } from 'react-native-gesture-handler'
+import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable'
 import { Ionicons } from '@expo/vector-icons'
 import { useBottomSheet } from '@/hooks/useBottomSheet'
 import { Strings } from '@/constants/Strings'

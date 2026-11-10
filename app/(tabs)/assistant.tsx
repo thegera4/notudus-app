@@ -16,16 +16,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import * as LocalAuthentication from 'expo-local-authentication'
-import { router } from 'expo-router'
 import { v4 as uuidv4 } from 'uuid'
 import TopBar from '@/components/shared/TopBar'
 import ChatBubble from '@/components/assistant/ChatBubble'
-import VoiceButton from '@/components/assistant/VoiceButton'
 import { ScreenEnum } from '@/constants/Enums'
 import { Strings } from '@/constants/Strings'
 import { Colors } from '@/constants/Colors'
 import { AIConstants } from '@/constants/AI'
-import { addNoteRoute } from '@/constants/Routes'
 import { ChatMessage, NoteModelType } from '@/types'
 import { useAuth } from '@/hooks/useAuth'
 import Note from '@/models/Note'
@@ -68,7 +65,22 @@ export default function AssistantScreen() {
 
   const { auth, setAuth } = useAuth()
   const flatListRef = useRef<FlatList<ChatMessage>>(null)
-  const baseInputBeforeVoiceRef = useRef<string>('')
+
+  const initAssistant = async () => {
+    try {
+      const params = await getActiveCloudModelParams()
+      const usage = await getDailyUsage(params.dailyLimit)
+      setDailyUsage(usage)
+      setMessages([
+        {
+          ...INITIAL_MESSAGE,
+          content: buildWelcomeContent(usage),
+        },
+      ])
+    } catch (e) {
+      console.warn('Error initializing assistant state:', e)
+    }
+  }
 
   useEffect(() => {
     initAssistant()
@@ -79,38 +91,16 @@ export default function AssistantScreen() {
       'change',
       (nextAppState: AppStateStatus) => {
         if (nextAppState === 'background') {
-          setAuth && setAuth(false)
+          setAuth(false)
         }
       }
     )
     return () => subscription.remove()
   }, [setAuth])
 
-  const initAssistant = async () => {
-    try {
-      let limit = AIConstants.MAX_DAILY_MESSAGES
-      if (typeof getActiveCloudModelParams === 'function') {
-        const params = await getActiveCloudModelParams()
-        limit = params.dailyLimit
-      }
-
-      if (typeof getDailyUsage === 'function') {
-        const usage = await getDailyUsage(limit)
-        setDailyUsage(usage)
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === 'welcome' ? { ...m, content: buildWelcomeContent(usage) } : m
-          )
-        )
-      }
-    } catch (e) {
-      console.warn('Error initializing assistant state:', e)
-    }
-  }
-
   const handleAuth = useCallback(async (): Promise<void> => {
     if (auth) {
-      setAuth && setAuth(false)
+      setAuth(false)
       return
     }
     try {
@@ -118,7 +108,7 @@ export default function AssistantScreen() {
         promptMessage: Strings.ASSISTANT.UNLOCK_PROMPT,
       })
       if (result.success) {
-        setAuth && setAuth(true)
+        setAuth(true)
       } else {
         Alert.alert(Strings.MODALS.NO_AUTH_METHOD, Strings.MODALS.NO_AUTH_MESSAGE, [{ text: 'OK' }])
       }
@@ -137,11 +127,8 @@ export default function AssistantScreen() {
           text: 'Clear',
           style: 'destructive',
           onPress: async () => {
-            let usageToUse = dailyUsage
-            if (__DEV__ && typeof resetDailyUsage === 'function') {
-              usageToUse = await resetDailyUsage(dailyUsage.limit)
-              setDailyUsage(usageToUse)
-            }
+            const usageToUse = await resetDailyUsage(dailyUsage.limit)
+            setDailyUsage(usageToUse)
             setMessages([
               {
                 ...INITIAL_MESSAGE,
@@ -155,32 +142,12 @@ export default function AssistantScreen() {
     )
   }, [dailyUsage])
 
-  const handleVoiceListeningStart = () => {
-    baseInputBeforeVoiceRef.current = inputText.trim()
-  }
-
-  const handleVoiceTranscript = (transcript: string) => {
-    const base = baseInputBeforeVoiceRef.current
-    setInputText(base ? `${base} ${transcript}` : transcript)
-  }
-
-  const handleOpenSourceNote = async (noteId: string) => {
-    const notes = await Note.getNotes(auth)
-    const found = notes.find((n) => n.id === noteId)
-    if (found) {
-      router.push({ pathname: addNoteRoute, params: { note: JSON.stringify(found) } })
-    }
-  }
-
   const handleSend = async () => {
     const question = inputText.trim()
     if (!question || isGenerating) return
 
     // 1. Verify daily message limit (max 10 messages per day stored in AsyncStorage)
-    const currentUsage =
-      typeof getDailyUsage === 'function'
-        ? await getDailyUsage(dailyUsage.limit)
-        : dailyUsage
+    const currentUsage = await getDailyUsage(dailyUsage.limit)
 
     if (currentUsage.isLimitReached) {
       setDailyUsage(currentUsage)
@@ -197,7 +164,6 @@ export default function AssistantScreen() {
     }
 
     setInputText('')
-    baseInputBeforeVoiceRef.current = ''
     setIsGenerating(true)
 
     const userMessage: ChatMessage = {
@@ -223,7 +189,7 @@ export default function AssistantScreen() {
       let userNotes: NoteModelType[] = []
 
       if (!effectiveAuth) {
-        const allNotes = (await Note.getNotes(true)) || []
+        const allNotes = await Note.getNotes(true)
         const hasPrivateNotes = allNotes.some((n) => n.locked === 1)
 
         if (hasPrivateNotes) {
@@ -233,7 +199,7 @@ export default function AssistantScreen() {
             })
             if (authResult.success) {
               effectiveAuth = true
-              setAuth && setAuth(true)
+              setAuth(true)
               userNotes = allNotes
             }
           } catch (e) {
@@ -242,10 +208,10 @@ export default function AssistantScreen() {
         }
 
         if (!effectiveAuth) {
-          userNotes = (await Note.getNotes(false)) || []
+          userNotes = await Note.getNotes(false)
         }
       } else {
-        userNotes = (await Note.getNotes(true)) || []
+        userNotes = await Note.getNotes(true)
       }
 
       if (userNotes.length === 0) {
@@ -260,10 +226,7 @@ export default function AssistantScreen() {
         return
       }
 
-      const relevantNotes =
-        typeof selectRelevantNotes === 'function'
-          ? selectRelevantNotes(userNotes, question)
-          : userNotes.slice(0, 5)
+      const relevantNotes = selectRelevantNotes(userNotes, question)
 
       const sourceRefs = relevantNotes.slice(0, 4).map((n) => ({
         id: n.id,
@@ -306,15 +269,13 @@ export default function AssistantScreen() {
       }
 
       // 4. Increment daily counter in AsyncStorage upon successful response
-      if (typeof incrementDailyUsage === 'function') {
-        const updatedUsage = await incrementDailyUsage(dailyUsage.limit)
-        setDailyUsage(updatedUsage)
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === 'welcome' ? { ...m, content: buildWelcomeContent(updatedUsage) } : m
-          )
+      const updatedUsage = await incrementDailyUsage(dailyUsage.limit)
+      setDailyUsage(updatedUsage)
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === 'welcome' ? { ...m, content: buildWelcomeContent(updatedUsage) } : m
         )
-      }
+      )
     } catch (error: any) {
       console.error('Error during AI inference:', error)
       setMessages((prev) =>
@@ -352,9 +313,7 @@ export default function AssistantScreen() {
           ref={flatListRef}
           data={messages}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <ChatBubble message={item} onNotePress={handleOpenSourceNote} />
-          )}
+          renderItem={({ item }) => <ChatBubble message={item} />}
           contentContainerStyle={styles.chatContent}
           keyboardShouldPersistTaps="handled"
           onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
@@ -369,12 +328,6 @@ export default function AssistantScreen() {
         )}
 
         <View style={styles.inputBar}>
-          <VoiceButton
-            onListeningStart={handleVoiceListeningStart}
-            onTranscript={handleVoiceTranscript}
-            disabled={isGenerating || dailyUsage.isLimitReached}
-          />
-
           <TextInput
             style={styles.textInput}
             placeholder={
